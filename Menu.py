@@ -27,15 +27,24 @@ class Menu():
         for item in list_array:
             if index < 9:
                 print(f"0{str(index+1)} {item}")
+                index += 1
             else:
                 print(f"{str(index+1)} {item}")
-            index += 1
+                index += 1
 
         return list_array
 
     def return_query_results(self, type, query):
         """Return results of a query"""
-        result = client.find(type, query)
-        return_type = ["title", "album", "artist"]
-        for item in result:
-            print(item[return_type[0]], item[return_type[1]], item[return_type[2]])
+        return_type = ["artist", "album", "title"]
+        if type == return_type[0]:
+            result = client.find(return_type[0], query)
+        elif type == return_type[1]:
+            result = client.find(return_type[1], query)
+        elif type == return_type[2]:
+            result = client.find(return_type[2], query)
+        else:
+            pass
+        # for item in result:
+        #     print(item[return_type[0]], item[return_type[1]], item[return_type[2]])
+        return result
