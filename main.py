@@ -2,7 +2,11 @@ from cs import cs
 from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
+from queue import queue
 from Menu import Menu
+
+from rich.console import Console
+from rich.layout import Layout
 
 # TODO
 # error handling, move functions into separate files
@@ -15,9 +19,18 @@ from Menu import Menu
 menu = Menu()
 
 
+console = Console()
+layout = Layout()
+layout.split_column(
+    Layout(name="upper"),
+    Layout(name="lower")
+)
+
+
 def main():
     cs()
     while True:
+        cs()
         menu.generate_menu(["Browse Library", "Search Library", "Shuffle Library", "Currently Playing", "Exit"])
         menu_opt = int(input("Do: "))
 
@@ -33,11 +46,12 @@ def main():
                 shuffle_library()
             case 4:
                 cs()
-                pass
+                queue()
             case 5:
                 cs()
                 exit()
             case _:
+                # error messaging in separate panel
                 pass
 
 

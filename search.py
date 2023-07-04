@@ -6,13 +6,6 @@ from client import client
 menu = Menu()
 
 
-# TODO
-# clean up code
-
-
-# let inputting 'b' function
-
-
 # this code works, it will process a query and display an output. 
 # it does not handle input
 # def search():
@@ -32,63 +25,16 @@ menu = Menu()
 
 #     return query_result_array
 
-# def search():
-#     levels = [0, 1, 2]
-#     current_level = 1
-#     while True:
-#         try:
-#             query = input("Search: ")
-#             query_result = client.search("any", query)
-#             query_processed = process_query_result(query_result)
-
-#             # print processed query result
-#             for item in query_processed:
-#                 print(item["artist"], item["album"], item["title"])
-
-#             query_option = input("Choose: ")
-#             query_option_array = []
-#             for item in query_option.split(" "):
-#                 query_option_array.append(item)
-
-#             if len(query_option_array) > 1:
-#                 query_selection = query_processed[int(query_option_array[1]) - 1]
-#                 query_selection_final = query_selection["file"]
-#                 handle_cbi_output(query_option_array, query_selection_final)
-#             else:
-#                 query_selection = 0
-#         except (ValueError, IndexError, TypeError):
-#             pass
-
-
-# def process_query_result(query_result):
-#     query_result_array = []
-#     for item in query_result:
-#         query_result_array.append(item)
-
-#     return query_result_array
-
-
-# def handle_cbi_output(input_array, media_selection):
-#     match input_array[0]:
-#         case "a":
-#             # print message when added, do this during interface
-#             # design, maybe in a small box at the bottom?
-#             client.add(media_selection)
-#             print("Added")
-#             return ""
-#         case "b":
-#             return ""
-#         case _:
-#             pass
-
 
 def search():
     levels = [0, 1, 2]
     current_level = 1
+    display_index = 1
     while True:
         try:
             match current_level:
                 case 1:
+                    cs()
                     query = input("Search: ")
                     query_input_array = []
                     for item in query:
@@ -102,7 +48,11 @@ def search():
 
                         # print processed query result
                         for item in query_processed:
-                            print(item["artist"], item["album"], item["title"])
+                            if display_index < 10:
+                                print("0" + str(display_index), item["artist"], item["album"], item["title"])
+                            else:
+                                print(str(display_index), item["artist"], item["album"], item["title"])
+                            display_index += 1
                         current_level += 1
                 case 2:
                     query_option = input("Choose: ")
