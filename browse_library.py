@@ -1,9 +1,15 @@
 from cs import cs
 from client import client
 from Menu import Menu
+import time
 
+from rich import box
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
 
 menu = Menu()
+console = Console()
 
 
 def browse_library():
@@ -48,6 +54,9 @@ def handle_cbi_output(available_levels: list, current_level, action, media_selec
                 current_level = available_levels[current_level - 1]
                 return current_level
             case _:
+                info_panel = Panel("Invalid option")
+                console.print(info_panel)
+                time.sleep(0.5)
                 return current_level
     elif ls_type == "file":
         match action:
@@ -67,11 +76,27 @@ def handle_cbi_output(available_levels: list, current_level, action, media_selec
 
 
 def common_browse_interface(directory, type):
+    list_table = Table(
+        expand=True,
+        box=box.SIMPLE_HEAD,
+        row_styles=["", "dim"]
+    )
+    list_table.add_column("#")
+    list_table.add_column("Title")
     while True:
         try:
             cs()
             list = menu.list_directory(directory, type)
             list_option_array = []
+            display_index = 1
+
+            for item in list:
+                list_table.add_row(str(display_index), item)
+                display_index += 1
+
+            list_panel = Panel(list_table, title="Browse Library")
+
+            console.print(list_panel)
 
             list_option = input("Choose: ")
             for item in list_option.split(" "):

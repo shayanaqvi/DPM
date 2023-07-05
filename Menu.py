@@ -9,28 +9,30 @@ class Menu():
 
     def generate_menu(self, prompts: list):
         """Generate a list of options for the user to choose from"""
-        i = 1
+        # i = 1
+        menu_array = []
         for item in prompts:
-            print(f"{i}.", item)
-            i += 1
+            # print(f"{i}.", item)
+            menu_array.append(f"{item}")
+            # i += 1
+        return menu_array
 
     def list_directory(self, directory, type):
         """List a given directory"""
         list = client.lsinfo(directory)
         list_array = []
         index = 0
-        menustr = ""
 
         for item in list:
             list_array.append(item[type])
 
-        for item in list_array:
-            if index < 9:
-                print(f"0{str(index+1)} {item}")
-                index += 1
-            else:
-                print(f"{str(index+1)} {item}")
-                index += 1
+        # for item in list_array:
+        #     if index < 9:
+        #         print(f"0{str(index+1)} {item}")
+        #         index += 1
+        #     else:
+        #         print(f"{str(index+1)} {item}")
+        #         index += 1
 
         return list_array
 

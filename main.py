@@ -5,33 +5,38 @@ from search import search
 from queue import queue
 from Menu import Menu
 
+from rich import box
 from rich.console import Console
-from rich.layout import Layout
-
-# TODO
-# error handling, move functions into separate files
-# pipe messages/error messages to a separate panel (during interface design)
-# if 'a' or 'v' is input without an index, an error is returned
-# print instructions during browsing in a separate panel
-# input type check for menu_opt
+from rich.table import Table
+from rich.panel import Panel
 
 
 menu = Menu()
-
-
 console = Console()
-layout = Layout()
-layout.split_column(
-    Layout(name="upper"),
-    Layout(name="lower")
-)
 
 
 def main():
+    main_menu_table = Table(
+        expand=True,
+        box=box.SIMPLE_HEAD,
+        row_styles=["", "dim"]
+    )
+    main_menu_table.add_column("#", ratio=1)
+    main_menu_table.add_column("Options", ratio=12)
+
+    display_index = 1
+    main_menu = menu.generate_menu(["Browse Library", "Search Library", "Shuffle Library", "Currently Playing", "Exit"])
+
+    # generate table
+    for entry in main_menu:
+        main_menu_table.add_row(str(display_index), entry)
+        display_index += 1
+
     cs()
     while True:
         cs()
-        menu.generate_menu(["Browse Library", "Search Library", "Shuffle Library", "Currently Playing", "Exit"])
+        main_menu_panel = Panel(main_menu_table, title="Welcome to DPM!")
+        console.print(main_menu_panel)
         menu_opt = int(input("Do: "))
 
         match menu_opt:

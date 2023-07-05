@@ -2,4 +2,4 @@ import os
 
 
 def cs():
-    os.system("clear")
+    os.system("printf '\033c'")

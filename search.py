@@ -2,7 +2,13 @@ from Menu import Menu
 from cs import cs
 from client import client
 
+from rich import box
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
 
+
+console = Console()
 menu = Menu()
 
 
@@ -29,14 +35,24 @@ menu = Menu()
 def search():
     levels = [0, 1, 2]
     current_level = 1
-    display_index = 1
     while True:
         try:
             match current_level:
                 case 1:
                     cs()
+                    display_index = 1
+                    query_result_table = Table(
+                        expand=True,
+                        box=box.SIMPLE_HEAD,
+                        row_styles=["", "dim"]
+                    )
+                    query_result_table.add_column("#")
+                    query_result_table.add_column("Artist")
+                    query_result_table.add_column("Album")
+                    query_result_table.add_column("Title")
                     query = input("Search: ")
                     query_input_array = []
+
                     for item in query:
                         query_input_array.append(item)
 
@@ -48,11 +64,14 @@ def search():
 
                         # print processed query result
                         for item in query_processed:
-                            if display_index < 10:
-                                print("0" + str(display_index), item["artist"], item["album"], item["title"])
-                            else:
-                                print(str(display_index), item["artist"], item["album"], item["title"])
+                            query_result_table.add_row(str(display_index), item["artist"], item["album"], item["title"])
+                            # if display_index < 10:
+                            #     print("0" + str(display_index), item["artist"], item["album"], item["title"])
+                            # else:
+                            #     print(str(display_index), item["artist"], item["album"], item["title"])
                             display_index += 1
+                        query_result_panel = Panel(query_result_table, title="Search Results")
+                        console.print(query_result_panel)
                         current_level += 1
                 case 2:
                     query_option = input("Choose: ")
