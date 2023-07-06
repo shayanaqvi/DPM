@@ -15,10 +15,11 @@ def queue():
     for item in current_playlist_array:
         if item["title"] == current_song["title"]:
             cs_index = current_playlist_array.index(item)
-        display_playlist_array.append(item["title"])
+        display_playlist_array.append(item)
 
     # print everything ahead of current index
-    for item in display_playlist_array[cs_index:]:
-        print(item)
+    # for item in display_playlist_array[cs_index:]:
+    #     print(item)
 
-    temp = input("")
+    return display_playlist_array[cs_index:]
+    # temp = input("")

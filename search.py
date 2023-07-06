@@ -2,6 +2,8 @@ from Menu import Menu
 from cs import cs
 from client import client
 
+import random
+
 from rich import box
 from rich.console import Console
 from rich.table import Table
@@ -70,7 +72,10 @@ def search():
                             # else:
                             #     print(str(display_index), item["artist"], item["album"], item["title"])
                             display_index += 1
-                        query_result_panel = Panel(query_result_table, title="Search Results")
+
+                        colours = ["red", "yellow", "blue", "green", "magenta"]
+                        random_colour = random.randint(0, 4)
+                        query_result_panel = Panel(query_result_table, title="Search Results", style=colours[random_colour])
                         console.print(query_result_panel)
                         current_level += 1
                 case 2:

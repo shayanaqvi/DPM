@@ -2,6 +2,7 @@ from cs import cs
 from client import client
 from Menu import Menu
 import time
+import random
 
 from rich import box
 from rich.console import Console
@@ -54,9 +55,6 @@ def handle_cbi_output(available_levels: list, current_level, action, media_selec
                 current_level = available_levels[current_level - 1]
                 return current_level
             case _:
-                info_panel = Panel("Invalid option")
-                console.print(info_panel)
-                time.sleep(0.5)
                 return current_level
     elif ls_type == "file":
         match action:
@@ -94,7 +92,10 @@ def common_browse_interface(directory, type):
                 list_table.add_row(str(display_index), item)
                 display_index += 1
 
-            list_panel = Panel(list_table, title="Browse Library")
+            colours = ["red", "yellow", "cyan", "blue", "magenta"]
+            random_colour = random.randint(0, 4)
+
+            list_panel = Panel(list_table, title="Browse Library", style=colours[random_colour])
 
             console.print(list_panel)
 

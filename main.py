@@ -3,6 +3,7 @@ from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
 from queue import queue
+from currently_playing import currently_playing
 from Menu import Menu
 
 from rich import box
@@ -34,30 +35,36 @@ def main():
 
     cs()
     while True:
-        cs()
-        main_menu_panel = Panel(main_menu_table, title="Welcome to DPM!")
-        console.print(main_menu_panel)
-        menu_opt = int(input("Do: "))
+        try:
+            cs()
+            main_menu_panel = Panel(main_menu_table, title="Main Menu", style="green")
+            console.print(main_menu_panel)
+            menu_opt = int(input("Do: "))
 
-        match menu_opt:
-            case 1:
-                cs()
-                browse_library()
-            case 2:
-                cs()
-                search()
-            case 3:
-                cs()
-                shuffle_library()
-            case 4:
-                cs()
-                queue()
-            case 5:
-                cs()
-                exit()
-            case _:
-                # error messaging in separate panel
-                pass
+            match menu_opt:
+                case 1:
+                    cs()
+                    browse_library()
+                case 2:
+                    cs()
+                    search()
+                case 3:
+                    cs()
+                    shuffle_library()
+                case 4:
+                    cs()
+                    currently_playing()
+                case 5:
+                    cs()
+                    exit()
+                case _:
+                    # error messaging in separate panel
+                    pass
+        except (KeyError, ValueError):
+            pass
+        except (KeyboardInterrupt):
+            cs()
+            exit()
 
 
 main()
