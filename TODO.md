@@ -5,3 +5,6 @@
 - Error handling
 - Messages/error messages in separate panels
 - If 'a' or 'v' is input without an index, an error is returned
+- Find better unicode characters for the playlist options in the currently playing screen
+- After exiting the currently playing screen, you have to select a menu option twice for it to work
+- Error messaging to the user
