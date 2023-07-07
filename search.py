@@ -1,9 +1,10 @@
-from Menu import Menu
+import random
+
 from cs import cs
 from client import client
 
-import random
-
+from Menu import Menu
+from colours import ReturnColour
 from rich import box
 from rich.console import Console
 from rich.table import Table
@@ -12,96 +13,51 @@ from rich.panel import Panel
 
 console = Console()
 menu = Menu()
-
-
-# this code works, it will process a query and display an output. 
-# it does not handle input
-# def search():
-#     query = input("Search: ")
-#     query_result = client.search("any", query)
-#     query_processed = process_query_result(query_result)
-
-#     # print processed query result
-#     for item in query_processed:
-#         print(item["artist"], item["album"], item["title"])
-
-
-# def process_query_result(query_result):
-#     query_result_array = []
-#     for item in query_result:
-#         query_result_array.append(item)
-
-#     return query_result_array
+retcol = ReturnColour()
 
 
 def search():
-    levels = [0, 1, 2]
+    # initial level
     current_level = 1
     while True:
         try:
             match current_level:
                 case 1:
-                    cs()
-                    display_index = 1
-                    query_result_table = Table(
-                        expand=True,
-                        box=box.SIMPLE_HEAD,
-                        row_styles=["", "dim"]
-                    )
-                    query_result_table.add_column("#")
-                    query_result_table.add_column("Artist")
-                    query_result_table.add_column("Album")
-                    query_result_table.add_column("Title")
-                    query = input("Search: ")
-                    query_input_array = []
+                    try:
+                        instructions_panel("⟵ Ctrl+c to return to main menu")
 
-                    for item in query:
-                        query_input_array.append(item)
+                        # ask user for input
+                        user_query = input("Search: ")
+                        user_query_result = client.search("any", user_query)
+                        user_query_processed = process_query_result(user_query_result)
 
-                    if len(query_input_array) == 1:
-                        current_level = handle_cbi_output(query_input_array, "", current_level, levels, "search")
-                    else:
-                        query_result = client.search("any", query)
-                        query_processed = process_query_result(query_result)
+                        # generate & print table of search results
+                        table = generate_table(user_query_processed)
+                        cs()
+                        console.print(table)
+                        instructions_panel("⟵ Ctrl+c to return to search")
 
-                        # print processed query result
-                        for item in query_processed:
-                            query_result_table.add_row(str(display_index), item["artist"], item["album"], item["title"])
-                            # if display_index < 10:
-                            #     print("0" + str(display_index), item["artist"], item["album"], item["title"])
-                            # else:
-                            #     print(str(display_index), item["artist"], item["album"], item["title"])
-                            display_index += 1
-
-                        colours = ["red", "yellow", "blue", "green", "magenta"]
-                        random_colour = random.randint(0, 4)
-                        query_result_panel = Panel(query_result_table, title="Search Results", style=colours[random_colour])
-                        console.print(query_result_panel)
+                        # increase level
                         current_level += 1
+                    except (KeyboardInterrupt, EOFError):
+                        cs()
+                        return
                 case 2:
-                    query_option = input("Choose: ")
-                    query_option_array = []
-                    for item in query_option.split(" "):
-                        query_option_array.append(item)
+                    try:
+                        # ask user for input
+                        query_option = input("Choose: ")
 
-                    query_selection = 0
-                    query_selection_file = ""
-
-                    if len(query_option_array) > 1:
-                        query_selection = query_processed[int(query_option_array[1]) - 1]
-                        query_selection_file = query_selection["file"]
-                    else:
-                        pass
-
-                    current_level = handle_cbi_output(query_option_array, query_selection_file, current_level, levels, "choose")
-                case _:
-                    cs()
-                    return ""
+                        # handle input
+                        handle_input(query_option, current_level, user_query_processed)
+                    except (KeyboardInterrupt, EOFError):
+                        cs()
+                        current_level -= 1
         except (ValueError, IndexError):
             pass
 
 
 def process_query_result(query_result):
+    # process the result of a query and add it to an array
     query_result_array = []
     for item in query_result:
         query_result_array.append(item)
@@ -109,33 +65,66 @@ def process_query_result(query_result):
     return query_result_array
 
 
-def handle_cbi_output(input_array, media_selection, current_level, available_levels, type):
-    if type == "search":
-        if len(input_array) > 1:
-            pass
-        else:
+def handle_input(input, current_level, processed_query):
+    # split input and put into array
+    input_array = []
+    for item in input.split(" "):
+        input_array.append(item)
+
+    # check for length of array
+    match len(input_array):
+        case 1:
+            instructions_panel("Invalid selection")
+        case 2:
             match input_array[0]:
-                case "b":
-                    current_level -= 1
-                    return current_level
-                case _:
-                    return current_level
-    elif type == "choose":
-        if len(input_array) > 1:
-            match input_array[0]:
+                # check if the letter at the 0th index is acceptable
                 case "a":
-                    # print message when added, do this during interface
-                    # design, maybe in a small box at the bottom?
-                    client.add(media_selection)
-                    print("Added")
-                    return current_level
+                    if input_array[1].isdigit():
+                        # add selection to queue
+                        media_selection = processed_query[int(input_array[1]) - 1]
+                        instructions_panel("Added!")
+                        client.add(media_selection["file"])
+                    else:
+                        instructions_panel("Invalid selection")
                 case _:
-                    print("Invalid option")
-                    return current_level
-        else:
-            match input_array[0]:
-                case "b":
-                    current_level -= 1
-                    return current_level
-                case _:
-                    return current_level
+                    instructions_panel("Invalid selection")
+        case _:
+            instructions_panel("Invalid selection")
+
+
+def generate_table(processed_query):
+    # generate a table of search results
+    display_index = 1
+
+    # define the table
+    query_result_table = Table(
+        expand=True,
+        box=box.SIMPLE_HEAD,
+        row_styles=["", "dim"]
+    )
+    query_result_table.add_column("Artist")
+    query_result_table.add_column("#")
+    query_result_table.add_column("Title")
+    query_result_table.add_column("Album")
+
+    # add items to table
+    for item in processed_query:
+        query_result_table.add_row(
+            item["artist"],
+            str(display_index),
+            item["title"],
+            item["album"]
+        )
+        display_index += 1
+
+    # put table into panel
+    panel = Panel(query_result_table, title="Search Results", style=retcol.generate_random_colour())
+    return panel
+
+
+def instructions_panel(instructions):
+    # print instructions
+    panel = ""
+    panel = Panel(instructions, style=retcol.generate_random_colour())
+    console.print(panel)
+
