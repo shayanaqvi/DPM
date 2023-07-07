@@ -1,6 +1,6 @@
 # TODO
 - Clean up code
-- Different key for going back
+- Different key for going back (CTRL C/CTRL D)
   - Different escape sequence for going back, maybe throughout the app?
 - Error handling
 - Messages/error messages in separate panels
@@ -8,3 +8,5 @@
 - Find better unicode characters for the playlist options in the currently playing screen
 - After exiting the currently playing screen, you have to select a menu option twice for it to work
 - Error messaging to the user
+- Let the user input single keys to toggle options in the currently playing screen
+- Check if the queue is empty or not in the currently playing screen
