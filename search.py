@@ -1,5 +1,6 @@
 from cs import cs
 from client import client
+from info_panel import info_panel
 
 from Menu import Menu
 from Colours import ReturnColour
@@ -22,7 +23,7 @@ def search():
             match current_level:
                 case 1:
                     try:
-                        instructions_panel("⟵ Ctrl+c to return to main menu")
+                        info_panel("⟵ Ctrl+c to return to main menu")
 
                         # ask user for input
                         user_query = input("Search: ")
@@ -33,7 +34,7 @@ def search():
                         table = generate_table(user_query_processed)
                         cs()
                         console.print(table)
-                        instructions_panel("⟵ Ctrl+c to return to search")
+                        info_panel("⟵ Ctrl+c to return to search")
 
                         # increase level
                         current_level += 1
@@ -72,7 +73,7 @@ def handle_input(input, current_level, processed_query):
     # check for length of array
     match len(input_array):
         case 1:
-            instructions_panel("Invalid selection")
+            info_panel("Invalid selection")
         case 2:
             match input_array[0]:
                 # check if the letter at the 0th index is acceptable
@@ -80,14 +81,14 @@ def handle_input(input, current_level, processed_query):
                     if input_array[1].isdigit():
                         # add selection to queue
                         media_selection = processed_query[int(input_array[1]) - 1]
-                        instructions_panel("Added!")
+                        info_panel("Added!")
                         client.add(media_selection["file"])
                     else:
-                        instructions_panel("Invalid selection")
+                        info_panel("Invalid selection")
                 case _:
-                    instructions_panel("Invalid selection")
+                    info_panel("Invalid selection")
         case _:
-            instructions_panel("Invalid selection")
+            info_panel("Invalid selection")
 
 
 def generate_table(processed_query):
@@ -118,11 +119,3 @@ def generate_table(processed_query):
     # put table into panel
     panel = Panel(query_result_table, title="Search Results", style=retcol.generate_random_colour())
     return panel
-
-
-def instructions_panel(instructions):
-    # print instructions
-    panel = ""
-    panel = Panel(instructions, style=retcol.generate_random_colour())
-    console.print(panel)
-

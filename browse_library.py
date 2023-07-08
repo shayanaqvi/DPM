@@ -1,5 +1,6 @@
 from cs import cs
 from client import client
+from info_panel import info_panel
 from Menu import Menu
 from Colours import ReturnColour
 
@@ -96,7 +97,7 @@ def handle_input(input, processed_query):
     # check for length of array
     match len(input_array):
         case 1:
-            instructions_panel("Invalid selection")
+            info_panel("Invalid selection")
         case 2:
             match input_array[0]:
                 # check if the letter at the 0th index is acceptable
@@ -105,19 +106,19 @@ def handle_input(input, processed_query):
                     if input_array[1].isdigit():
                         # add selection to queue
                         media_selection = processed_query[int(input_array[1]) - 1]
-                        instructions_panel("Added!")
+                        info_panel("Added!")
                         client.add(media_selection)
                     else:
-                        instructions_panel("Invalid selection")
+                        info_panel("Invalid selection")
                 case "v":
                     if current_level == 5:
-                        instructions_panel("Invalid selection")
+                        info_panel("Invalid selection")
                     else:
                         current_level += 1
                 case _:
-                    instructions_panel("Invalid selection")
+                    info_panel("Invalid selection")
         case _:
-            instructions_panel("Invalid selection")
+            info_panel("Invalid selection")
 
 
 def common_browse_interface(directory_name, file_type):
@@ -128,7 +129,7 @@ def common_browse_interface(directory_name, file_type):
     )
     list_display = generate_table(list)
     console.print(list_display)
-    instructions_panel("⟵ Ctrl+c to return")
+    info_panel("⟵ Ctrl+c to return")
     return list
 
 
@@ -157,13 +158,3 @@ def generate_table(media_list):
         style=retcol.generate_random_colour()
     )
     return panel
-
-
-def instructions_panel(instructions):
-    """Inform the user"""
-    panel = ""
-    panel = Panel(
-        instructions,
-        style=retcol.generate_random_colour()
-    )
-    console.print(panel)
