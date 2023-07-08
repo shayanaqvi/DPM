@@ -1,5 +1,4 @@
-# RANDOM COLOURS
-from queue import queue
+from playlist import queue
 from client import client
 from cs import cs
 
@@ -29,9 +28,10 @@ def currently_playing_layout():
         row_styles=["", "dim"]
     )
     queue_table.add_column("Artist")
-    queue_table.add_column("#")
+    queue_table.add_column("#", width=4)
     queue_table.add_column("Title")
     queue_table.add_column("Album")
+    queue_table.add_column("Length")
 
     # current song details, for both the table and the panel at the top
     current_song_dictionary = client.currentsong()
@@ -167,14 +167,16 @@ def currently_playing_layout():
                 current_song_artist,
                 Text(str(display_index), style="b cyan"),
                 current_song_title,
-                current_song_album
+                current_song_album,
+                Text(return_song_duration(item["time"]), style="b blue", justify="right"),
             )
         else:
             queue_table.add_row(
                 item["artist"],
                 Text(str(display_index), style="dim"),
                 item["title"],
-                item["album"]
+                item["album"],
+                Text(return_song_duration(item["time"]), justify="right"),
             )
         display_index += 1
 
@@ -203,13 +205,23 @@ def currently_playing_layout():
     return layout
 
 
+def return_song_duration(something):
+    minutes = int(int(something) / 60)
+    seconds = int(something) % 60
+    if seconds < 10:
+        seconds = f"0{int(something) % 60}"
+    else:
+        pass
+    return f"{str(minutes)}:{str(seconds)}"
+
+
 def currently_playing():
     """Update the layout periodically"""
-    try:
-        cs()
-        with Live(currently_playing_layout(), refresh_per_second=4) as live:
+    cs()
+    with Live(currently_playing_layout(), refresh_per_second=4) as live:
+        try:
             while True:
                 live.update(currently_playing_layout())
-    except KeyboardInterrupt:
-        cs()
-        return
+        except (KeyboardInterrupt, EOFError):
+            live.stop()
+            cs()
