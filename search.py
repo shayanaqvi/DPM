@@ -1,10 +1,8 @@
-import random
-
 from cs import cs
 from client import client
 
 from Menu import Menu
-from colours import ReturnColour
+from Colours import ReturnColour
 from rich import box
 from rich.console import Console
 from rich.table import Table
