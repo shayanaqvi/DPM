@@ -1,112 +1,169 @@
 from cs import cs
 from client import client
 from Menu import Menu
-import time
-import random
+from Colours import ReturnColour
 
 from rich import box
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
+
 menu = Menu()
 console = Console()
+retcol = ReturnColour()
+
+current_level = 0
 
 
 def browse_library():
-    levels = [0, 1, 2, 3]
-    current_level = levels[1]
-
+    """The main function"""
+    global current_level
+    current_level = 0
     while True:
-        match current_level:
-            case 1:
-                cs()
-                print("Input 'v' to view subdirectory, 'a' to add to queue, 'b' to go back")
-                artist_selection = common_browse_interface("", "directory")
-                current_level = handle_cbi_output(levels, current_level, artist_selection[0], artist_selection[1], "directory")
-            case 2:
-                cs()
-                print("Input 'v' to view subdirectory, 'a' to add to queue, 'b' to go back")
-                album_selection = common_browse_interface(artist_selection[1], "directory")
-                current_level = handle_cbi_output(levels, current_level, album_selection[0], album_selection[1], "directory")
-            case 3:
-                cs()
-                print("Input 'a' to add to queue, 'b' to go back")
-                title_selection = common_browse_interface(album_selection[1], "file")
-                current_level = handle_cbi_output(levels, current_level, title_selection[0], title_selection[1], "file")
-            case _:
-                cs()
-                return ""
+        try:
+            match current_level:
+                # level 0: display table of artists
+                case 0:
+                    try:
+                        cs()
+                        artists = common_browse_interface(
+                            "",
+                            "directory"
+                        )
+                        current_level += 1
+                    except (KeyboardInterrupt, EOFError):
+                        pass
+                # level 1: ask user to choose an artist
+                case 1:
+                    try:
+                        user_input_1 = input("Choose: ")
+                        handle_input(user_input_1, artists)
+                    except (KeyboardInterrupt, EOFError):
+                        cs()
+                        return
+                # level 2: display table of albums by the selected artist
+                case 2:
+                    try:
+                        cs()
+                        albums = common_browse_interface(
+                            # the final index is everything ahead of the 3rd
+                            # position in user_input_1
+                            artists[int(user_input_1[2:]) - 1],
+                            "directory"
+                        )
+                        current_level += 1
+                    except (KeyboardInterrupt, EOFError):
+                        pass
+                # level 3: ask user to choose an albm
+                case 3:
+                    try:
+                        user_input_3 = input("Choose: ")
+                        handle_input(user_input_3, albums)
+                    except (KeyboardInterrupt, EOFError):
+                        cs()
+                        current_level -= 3
+                # level 4: display table of tracks in selected album
+                case 4:
+                    try:
+                        cs()
+                        titles = common_browse_interface(
+                            albums[int(user_input_3[2:]) - 1],
+                            "file"
+                        )
+                        current_level += 1
+                    except (KeyboardInterrupt, EOFError):
+                        pass
+                # level 5: ask user to select tracks
+                case 5:
+                    try:
+                        user_input_5 = input("Choose: ")
+                        handle_input(user_input_5, titles)
+                    except (KeyboardInterrupt, EOFError):
+                        cs()
+                        current_level -= 3
+        except (ValueError, IndexError):
+            pass
 
 
-def handle_cbi_output(available_levels: list, current_level, action, media_selection, ls_type):
-    if ls_type == "directory":
-        match action:
-            case "v":
-                current_level = available_levels[current_level + 1]
-                return current_level
-            case "a":
-                # print message when added, do this during interface
-                # design, maybe in a small box at the bottom?
-                client.add(media_selection)
-                print("Added")
-                return current_level
-            case "b":
-                current_level = available_levels[current_level - 1]
-                return current_level
-            case _:
-                return current_level
-    elif ls_type == "file":
-        match action:
-            case "v":
-                return current_level
-            case "a":
-                # print message when added, do this during interface
-                # design, maybe in a small box at the bottom?
-                client.add(media_selection)
-                print("Added")
-                return current_level
-            case "b":
-                current_level = available_levels[current_level - 1]
-                return current_level
-            case _:
-                return current_level
+def handle_input(input, processed_query):
+    """Handle user input"""
+    global current_level
+    input_array = []
+    for item in input.split(" "):
+        input_array.append(item)
+
+    # check for length of array
+    match len(input_array):
+        case 1:
+            instructions_panel("Invalid selection")
+        case 2:
+            match input_array[0]:
+                # check if the letter at the 0th index is acceptable
+                # error messaging for a selection out of possible indices
+                case "a":
+                    if input_array[1].isdigit():
+                        # add selection to queue
+                        media_selection = processed_query[int(input_array[1]) - 1]
+                        instructions_panel("Added!")
+                        client.add(media_selection)
+                    else:
+                        instructions_panel("Invalid selection")
+                case "v":
+                    if current_level == 5:
+                        instructions_panel("Invalid selection")
+                    else:
+                        current_level += 1
+                case _:
+                    instructions_panel("Invalid selection")
+        case _:
+            instructions_panel("Invalid selection")
 
 
-def common_browse_interface(directory, type):
-    list_table = Table(
+def common_browse_interface(directory_name, file_type):
+    """Common interface for browsing the library"""
+    list = menu.list_directory(
+        directory_name,
+        file_type
+    )
+    list_display = generate_table(list)
+    console.print(list_display)
+    instructions_panel("⟵ Ctrl+c to return")
+    return list
+
+
+def generate_table(media_list):
+    """Generate a table"""
+    display_index = 1
+
+    result_table = Table(
         expand=True,
         box=box.SIMPLE_HEAD,
         row_styles=["", "dim"]
     )
-    list_table.add_column("#")
-    list_table.add_column("Title")
-    while True:
-        try:
-            cs()
-            list = menu.list_directory(directory, type)
-            list_option_array = []
-            display_index = 1
+    result_table.add_column("#")
+    result_table.add_column("Title")
 
-            for item in list:
-                list_table.add_row(str(display_index), item)
-                display_index += 1
+    for item in media_list:
+        result_table.add_row(
+            str(display_index),
+            item
+        )
+        display_index += 1
 
-            colours = ["red", "yellow", "cyan", "blue", "magenta"]
-            random_colour = random.randint(0, 4)
+    panel = Panel(
+        result_table,
+        title="Browse Library",
+        style=retcol.generate_random_colour()
+    )
+    return panel
 
-            list_panel = Panel(list_table, title="Browse Library", style=colours[random_colour])
 
-            console.print(list_panel)
-
-            list_option = input("Choose: ")
-            for item in list_option.split(" "):
-                list_option_array.append(item)
-
-            if len(list_option_array) > 1:
-                list_selection = list[int(list_option_array[1]) - 1]
-            else:
-                list_selection = 0
-            return [list_option_array[0], list_selection]
-        except (ValueError, TypeError, IndexError):
-            pass
+def instructions_panel(instructions):
+    """Inform the user"""
+    panel = ""
+    panel = Panel(
+        instructions,
+        style=retcol.generate_random_colour()
+    )
+    console.print(panel)
