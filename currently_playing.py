@@ -1,3 +1,4 @@
+# RANDOM COLOURS
 from queue import queue
 from client import client
 from cs import cs
@@ -7,13 +8,12 @@ from rich.layout import Layout
 from rich.text import Text
 from rich.table import Table
 from rich.panel import Panel
-from rich.console import Console, Group
+from rich.console import Group
 from rich.live import Live
 
 
 def currently_playing_layout():
-    console = Console()
-    
+    """Generate the layout of the currently playing screen"""
     # screen layout definition
     layout = Layout()
     layout.split_column(
@@ -105,7 +105,7 @@ def currently_playing_layout():
     current_song_duration_minutes = int(int(
             current_song_progress_array[1]
         ) / 60)
-    
+
     # get the playlist options and display them as icons
     repeat = current_status["repeat"]
     random = current_status["random"]
@@ -116,7 +116,7 @@ def currently_playing_layout():
         case "0":
             repeat_string = "-"
         case "1":
-            repeat_string = "⥁"
+            repeat_string = "🗘"
 
     match random:
         case "0":
@@ -200,12 +200,11 @@ def currently_playing_layout():
             )
         )
     )
-
-    # return final layout
     return layout
 
 
 def currently_playing():
+    """Update the layout periodically"""
     try:
         cs()
         with Live(currently_playing_layout(), refresh_per_second=4) as live:
