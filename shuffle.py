@@ -1,11 +1,6 @@
 # from client import client
-from mpd import MPDClient
+from client import client
 from info_panel import info_panel
-
-
-client = 0
-client = MPDClient()
-client.connect("localhost", 6600)
 
 
 def shuffle_library():
