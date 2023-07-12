@@ -13,11 +13,17 @@ The feature set, at present, is somewhat limited. Right now, it can:
 ## Issues
 - if left idle for too long, the app loses connection to MPD
 # Installation
+1. `git clone https://github.com/shayanaqvi/dpm.git`
+2. `cd dpm`
+3. `chmod u+x install.sh`
+4. `./install.sh` (modify `install_directory` to install somewhere else)
 ## Requirements
 - dpm requires a working installation of MPD.
   - For now, if your MPD setup has a different hostname and port number, change it in `client.py`. The default hostname is `"localhost"` and port number is `6600`. 
 ## Dependencies
 - Rich (install with `pip install rich`)
+# Uninstallation
+- Run `uninstall.sh` (modify the variable `installed_directory` if you installed it somewhere else)
 # Usage
 ## Navigation
 - Ctrl+c is used to navigate backwards. For example, when browsing the library, inputting `Ctrl+c` will take you to the parent directory.
