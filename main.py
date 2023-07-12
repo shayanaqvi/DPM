@@ -2,7 +2,6 @@ from cs import cs
 from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
-from currently_playing import update_layout
 from info_panel import info_panel
 from playlist_opt import playlist_options
 from Colours import colours
@@ -35,7 +34,6 @@ def main():
         "Search Library",
         "Shuffle Library",
         "Playlist Options",
-        "Currently Playing",
         "Exit"
     ])
 
@@ -81,9 +79,6 @@ def main():
                     playlist_options()
                     print_again = True
                 case 5:
-                    update_layout()
-                    print_again = True
-                case 6:
                     cs()
                     exit()
                 case _:
