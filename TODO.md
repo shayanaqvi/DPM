@@ -1,12 +1,9 @@
 # TODO
-- Clean up code
-- Different key for going back (CTRL C/CTRL D)
-  - Different escape sequence for going back, maybe throughout the app?
-- Error handling
-- Messages/error messages in separate panels
-- If 'a' or 'v' is input without an index, an error is returned
 - Find better unicode characters for the playlist options in the currently playing screen
-- After exiting the currently playing screen, you have to select a menu option twice for it to work
-- Error messaging to the user
 - Let the user input single keys to toggle options in the currently playing screen
-- Check if the queue is empty or not in the currently playing screen
+- Configuration options
+- Progress line in currently playing screen
+- Juggling between screen 4 and screen 5 produces "AttributeError: 'list' object has no attribute 'translate'"
+- Rewrite currently_playing.py again
+- Different currently playing screen layout depending on terminal size
+- Playlist support

@@ -2,7 +2,7 @@ from cs import cs
 from client import client
 from info_panel import info_panel
 from Menu import Menu
-from Colours import ReturnColour
+from Colours import colours
 
 from rich import box
 from rich.console import Console
@@ -12,7 +12,6 @@ from rich.panel import Panel
 
 menu = Menu()
 console = Console()
-retcol = ReturnColour()
 
 current_level = 0
 
@@ -114,7 +113,13 @@ def handle_input(input, processed_query):
                     if current_level == 5:
                         info_panel("Invalid selection")
                     else:
-                        current_level += 1
+                        if input_array[1].isdigit():
+                            if int(input_array[1]) > len(processed_query):
+                                info_panel("Invalid selection")
+                            else:
+                                current_level += 1
+                        else:
+                            info_panel("Invalid selection")
                 case _:
                     info_panel("Invalid selection")
         case _:
@@ -127,13 +132,13 @@ def common_browse_interface(directory_name, file_type):
         directory_name,
         file_type
     )
-    list_display = generate_table(list)
+    list_display = generate_table(list, file_type)
     console.print(list_display)
     info_panel("⟵ Ctrl+c to return")
     return list
 
 
-def generate_table(media_list):
+def generate_table(media_list, file_type):
     """Generate a table"""
     display_index = 1
 
@@ -145,16 +150,25 @@ def generate_table(media_list):
     result_table.add_column("#")
     result_table.add_column("Title")
 
-    for item in media_list:
-        result_table.add_row(
-            str(display_index),
-            item
-        )
-        display_index += 1
+    match file_type:
+        case "directory":
+            for item in media_list:
+                result_table.add_row(
+                    str(display_index),
+                    f"🗀  {item}"
+                )
+                display_index += 1
+        case "file":
+            for item in media_list:
+                result_table.add_row(
+                    str(display_index),
+                    f"𝅘𝅥𝅮 {item}"
+                )
+                display_index += 1
 
     panel = Panel(
         result_table,
         title="Browse Library",
-        style=retcol.generate_random_colour()
+        style=colours["blue"]
     )
     return panel

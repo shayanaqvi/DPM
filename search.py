@@ -3,7 +3,7 @@ from client import client
 from info_panel import info_panel
 
 from Menu import Menu
-from Colours import ReturnColour
+from Colours import colours
 from rich import box
 from rich.console import Console
 from rich.table import Table
@@ -12,7 +12,6 @@ from rich.panel import Panel
 
 console = Console()
 menu = Menu()
-retcol = ReturnColour()
 
 
 def search():
@@ -117,5 +116,5 @@ def generate_table(processed_query):
         display_index += 1
 
     # put table into panel
-    panel = Panel(query_result_table, title="Search Results", style=retcol.generate_random_colour())
+    panel = Panel(query_result_table, title="Search Results", style=colours["magenta"])
     return panel
