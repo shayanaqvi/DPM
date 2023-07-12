@@ -6,3 +6,4 @@
 - Different currently playing screen layout depending on terminal size
 - Playlist support
 - Command line arguments/perform things without entering the app
+- Redo installation
