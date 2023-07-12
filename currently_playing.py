@@ -11,7 +11,9 @@ from rich.table import Table
 from rich.text import Text
 
 
-# TODO current_status = client.status() as a function parameter
+def return_current_status():
+    current_status = client.status()
+    return current_status
 
 
 def screen_layout():
@@ -26,7 +28,7 @@ def screen_layout():
     un_table = up_next_table()
     try:
         cs_information = current_song_information()
-        current_status = client.status()
+        current_status = return_current_status()
         pl_settings = playlist_options()
 
         # items in the top-left panel
@@ -82,7 +84,7 @@ def screen_layout():
 
 
 def playlist_options():
-    current_status = client.status()
+    current_status = return_current_status()
     rep_str = "-"
     rand_str = "-"
     cons_str = "-"
@@ -179,7 +181,7 @@ def current_song_information():
     # client information
     try:
         cs_dictionary = client.currentsong()
-        current_status = client.status()
+        current_status = return_current_status()
 
         # current song strings, not in a panel
         cs_title = Text(
