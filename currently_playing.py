@@ -139,7 +139,7 @@ def up_next_table():
                     current_song["title"],
                     current_song["album"],
                     current_song["artist"],
-                    Text(return_song_duration(item["time"]))
+                    Text(return_song_duration(item["time"]), justify="right")
                 )
             else:
                 un_table.add_row(
@@ -147,7 +147,7 @@ def up_next_table():
                     item["title"],
                     item["album"],
                     item["artist"],
-                    Text(return_song_duration(item["time"]))
+                    Text(return_song_duration(item["time"]), justify="right")
                 )
             display_index += 1
 
