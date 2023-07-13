@@ -1,5 +1,4 @@
 ![dpm_logo](logo.png)
-# dpm
 dpm is just one more terminal frontend for MPD
 [![asciicast](https://asciinema.org/a/596525.svg)](https://asciinema.org/a/596525)
 
