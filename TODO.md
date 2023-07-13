@@ -2,6 +2,7 @@
 - Configuration options
 - Playlist support
 - Command line arguments/perform things without entering the app
+  - chain arguments
+- toggle playback after stopping it
 - Redo installation
-- Icons for un_table
-- Currently playing screen
+- Interface consistency
