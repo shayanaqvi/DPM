@@ -7,3 +7,5 @@
 - Currently playing does not work if nothing is playing
 - Redo installation
 - Interface consistency
+- Crop the current playlist
+- `dpm option r`
