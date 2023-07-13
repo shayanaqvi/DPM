@@ -61,6 +61,3 @@ def main():
                         box=box.MINIMAL
                     )
                 )
-
-
-main()
