@@ -136,10 +136,9 @@ def queue():
 
 
 def currently_playing():
-    with Live(generate_table(), refresh_per_second=4) as live:
-        while True:
-            try:
+    try:
+        with Live(generate_table(), refresh_per_second=4) as live:
+            while True:
                 live.update(generate_table())
-            except (KeyboardInterrupt, EOFError):
-                live.stop()
-                return
+    except (KeyboardInterrupt, EOFError):
+        return
