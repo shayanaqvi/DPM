@@ -21,13 +21,8 @@ The feature set, at present, is somewhat limited. Right now, it can:
 # Usage
 Refer to help.md
 # Screenshots
-TODO: Update screenshots
-## Main Menu
-![main_menu](screenshots/main_menu.png)
 ## Browsing the Library
-![browse_artist](screenshots/browse_artist.png)
-![browse_albums](screenshots/browse_albums.png)
-![browse_title](screenshots/browse_title.png)
+![browse_library](screenshots/browse_library.png)
 ## Searching the Library
 ![search_results](screenshots/search_results.png)
 ## Playlist Options
