@@ -1,17 +1,13 @@
 import sys
 
-from cs import cs
 from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
-from info_panel import info_panel
 from playlist_opt import playlist_options
-from Colours import colours
 
 from rich import box
 from rich.console import Console
 from rich.markdown import Markdown
-from rich.table import Table
 from rich.panel import Panel
 
 console = Console()
@@ -29,25 +25,25 @@ def main():
         )
     else:
         match user_arg[1]:
-            case "browse":
+            case "browse" | "b":
                 browse_library()
-            case "search":
+            case "search" | "f":
                 search()
-            case "shuffle":
+            case "shuffle" | "s":
                 shuffle_library()
-            case "opt":
+            case "opt" | "o":
                 playlist_options()
-            case "help":
+            case "help" | "h":
                 help = (
                     '# Help\n'
                     'Usage:\n'
                     'Input `dpm` followed by one of the following arguments:\n'
-                    '- browse\n'
-                    '- search\n'
-                    '- shuffle\n'
-                    '- opt\n'
-                    '- help\n\n'
-                    'For example, `dpm browse` will let you browse your library.'
+                    '- browse (`b`)\n'
+                    '- search (`f`)\n'
+                    '- shuffle (`s`)\n'
+                    '- opt (`o`)\n'
+                    '- help (`h`)\n\n'
+                    'For example, `dpm browse`, or `dpm b` will let you browse your library.'
                 )
                 console.print(
                     Panel(
@@ -61,7 +57,7 @@ def main():
             case _:
                 console.print(
                     Panel(
-                        "dpm: invalid arguments provided\nInput 'dpm help' for more information",
+                        "dpm: invalid argument provided\nInput 'dpm help' for more information",
                         style="red",
                         box=box.MINIMAL
                     )
