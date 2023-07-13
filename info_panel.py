@@ -1,3 +1,4 @@
+from rich import box
 from rich.panel import Panel
 from rich.console import Console
 from Colours import colours
@@ -8,6 +9,6 @@ def info_panel(information):
     panel = ""
     panel = Panel(
         information,
-        style=colours["red"]
+        style=colours["red"],
     )
     console.print(panel)

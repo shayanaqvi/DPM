@@ -1,272 +1,145 @@
 from client import client
-from playlist import queue
-from cs import cs
 
 from rich import box
-from rich.console import Group
-from rich.layout import Layout
-from rich.panel import Panel
-from rich.live import Live
 from rich.table import Table
+from rich.progress import track
 from rich.text import Text
+from rich.console import Console
+from rich.live import Live
 
 
-def return_current_status():
-    current_status = client.status()
-    return current_status
+console = Console()
 
 
-def screen_layout():
-    # layout definition
-    # TODO minimum size
-    layout = Layout()
-    layout.split_column(
-        Layout(name="top"),
-        Layout(name="bottom")
+def generate_table():
+    table = Table(
+        expand=True,
+        show_header=False,
+        box=box.SIMPLE_HEAD,
+        style="dim"
     )
-    layout["top"].size = 20
-    un_table = up_next_table()
-    try:
-        cs_information = current_song_information()
-        current_status = return_current_status()
-        pl_settings = playlist_options()
+    table.add_column("#")
+    table.add_column("Title")
+    table.add_column("Album")
+    table.add_column("Artist", justify="right")
+    table.add_column("Length", justify="right")
 
-        # items in the top-left panel
-        tl_items = Panel(
-            Group(
-                cs_information["title+panel"],
-                cs_information["album+panel"],
-                cs_information["artist+panel"],
-                Panel(
-                    Text(
-                        f"[{pl_settings['repeat']}{pl_settings['random']}{pl_settings['consume']}{pl_settings['single']}]",
-                        justify="center"
+    display_index = 1
+
+    queue_raw = queue()
+    current_song = queue_raw["current song"]
+    current_song_index = queue_raw["current song index"]
+    current_status = queue_raw["current status"]
+    playlist = queue_raw["current playlist"]
+
+    current_song_elapsed = current_status["time"]
+    current_song_elapsed_array = []
+    for item in current_song_elapsed.split(":"):
+        current_song_elapsed_array.append(item)
+
+    for item in playlist[current_song_index:]:
+        if item["id"] == current_song["id"]:
+            table.add_row(
+                Text(
+                    "⏵︎ " + str(display_index), style="blue"
+                ) if current_status["state"] == "play" else Text(
+                    "⏸︎ " + str(display_index), style="dim"
+                ),
+                Text(
+                    item["title"], style="red bold"
+                ) if current_status["state"] == "play" else Text(
+                    item["title"], style="red dim"
+                ),
+                Text(
+                    item["album"], style="yellow bold"
+                ) if current_status["state"] == "play" else Text(
+                    item["album"], style="yellow dim"
+                ),
+                Text(
+                    item["artist"], style="green bold"
+                ) if current_status["state"] == "play" else Text(
+                    item["artist"], style="green dim"
+                ),
+                Text(
+                    return_duration(item["time"]), style="blue"
+                ) if current_status["state"] == "play" else Text(
+                    return_duration(item["time"]), style="dim"
+                )
+            )
+            table.add_row(
+                "",
+                Text.assemble(
+                    (
+                        return_duration(current_song_elapsed_array[0]),
+                        "bold green"
+                    ) if current_status["state"] == "play" else Text(
+                        return_duration(current_song_elapsed_array[0]),
+                        "dim green"
                     ),
-                    box=box.SIMPLE_HEAD
-                )
-            ),
-            style="blue",
-            padding=3,
-            title=(
-                Text("⏵︎ Playing", style="reverse")
-            ) if current_status["state"] == "play" else (
-                Text("⏸︎ Paused")
-            ),
-            subtitle=Text(cs_information["progress"])
-        )
-
-        layout["top"].split(
-            Layout(
-                tl_items
+                    (
+                        " / ",
+                        "dim green"
+                    ),
+                    (
+                        return_duration(current_song_elapsed_array[1]),
+                        "dim green"
+                    )
+                ),
+                "",
+                "",
+                ""
             )
-        )
-        layout["bottom"].split(
-            Layout(
-                un_table
-            )
-        )
-
-        return layout
-    except (TypeError):
-        layout["top"].split(
-            Layout(
-                Panel(
-                    Text("MPD not playing", justify="center"),
-                    padding=8,
-                    style="blue"
+        else:
+            table.add_row(
+                    Text("+" + str(display_index), style="dim"),
+                    Text(item["title"], style="dim"),
+                    Text(item["album"], style="dim"),
+                    Text(item["artist"], style="dim"),
+                    Text(return_duration(item["time"]), style="dim")
                 )
-            )
-        )
-        layout["bottom"].split(
-            un_table
-        )
-        return layout
+        display_index += 1
+
+    return table
 
 
-def playlist_options():
-    current_status = return_current_status()
-    rep_str = "-"
-    rand_str = "-"
-    cons_str = "-"
-    sing_str = "-"
-
-    match current_status["repeat"]:
-        case "1":
-            rep_str = "r"
-
-    match current_status["random"]:
-        case "1":
-            rand_str = "z"
-
-    match current_status["consume"]:
-        case "1":
-            cons_str = "c"
-
-    match current_status["single"]:
-        case "1":
-            sing_str = "s"
-
-    return {
-        "repeat": rep_str,
-        "random": rand_str,
-        "consume": cons_str,
-        "single": sing_str
-    }
-
-
-def up_next_table():
-    # up next table
-    try:
-        un_table = Table(
-            expand=True,
-            row_styles=["", "dim"],
-            box=box.SIMPLE_HEAD
-        )
-        un_table.add_column("#", width=4)
-        un_table.add_column("Title")
-        un_table.add_column("Album")
-        un_table.add_column("Artist")
-        un_table.add_column("Length")
-
-        playlist = queue()
-        current_song = current_song_information()
-        display_index = 1
-
-        for item in playlist:
-            if Text(item["title"]) == current_song["title"]:
-                un_table.add_row(
-                    Text(str(display_index)),
-                    current_song["title"],
-                    current_song["album"],
-                    current_song["artist"],
-                    Text(return_song_duration(item["time"]), justify="right")
-                )
-            else:
-                un_table.add_row(
-                    Text("+" + str(display_index)),
-                    item["title"],
-                    item["album"],
-                    item["artist"],
-                    Text(return_song_duration(item["time"]), justify="right")
-                )
-            display_index += 1
-
-        return Panel(
-            un_table,
-            style="blue",
-            title="Up Next"
-        )
-    except (TypeError):
-        playlist = queue()
-        display_index = 1
-
-        for item in playlist:
-            un_table.add_row(
-                Text("+" + str(display_index)),
-                item["title"],
-                item["album"],
-                item["artist"],
-                Text(return_song_duration(item["time"]))
-            )
-            display_index += 1
-
-        return Panel(
-            un_table,
-            style="blue",
-            title="Up Next"
-        )
-
-
-def current_song_information():
-    # client information
-    try:
-        cs_dictionary = client.currentsong()
-        current_status = return_current_status()
-
-        # current song strings, not in a panel
-        cs_title = Text(
-            cs_dictionary["title"],
-            style="green"
-        )
-        cs_album = Text(
-            cs_dictionary["album"],
-            style="yellow"
-        )
-        cs_artist = Text(
-            cs_dictionary["artist"],
-            style="red"
-        )
-
-        # current song strings, in a panel
-        cs_title_panel = Panel(
-            Text(
-                cs_dictionary["title"],
-                justify="center",
-                style="green"
-            ),
-            box=box.SIMPLE_HEAD
-        )
-        cs_album_panel = Panel(
-            Text(
-                cs_dictionary["album"],
-                justify="center",
-                style="dim yellow"
-            ),
-            box=box.SIMPLE_HEAD,
-            title="From",
-            style="blue"
-        )
-        cs_artist_panel = Panel(
-            Text(
-                cs_dictionary["artist"],
-                justify="center",
-                style="dim red"
-            ),
-            box=box.SIMPLE_HEAD,
-            title="By",
-            style="blue"
-        )
-
-        # current song progress
-        cs_progress_array = []
-        for item in current_status["time"].split(":"):
-            cs_progress_array.append(item)
-        cs_progress = (
-            f'{return_song_duration(cs_progress_array[0])} / '
-            f'{return_song_duration(cs_progress_array[1])}'
-        )
-
-        return {
-            "title": cs_title,
-            "album": cs_album,
-            "artist": cs_artist,
-            "title+panel": cs_title_panel,
-            "album+panel": cs_album_panel,
-            "artist+panel": cs_artist_panel,
-            "progress": cs_progress,
-        }
-    except (KeyError):
-        return
-
-
-def return_song_duration(time):
-    # get an integer for the minutes
-    minutes = int(int(time) / 60)
+def return_duration(time):
+    # hours
     seconds = int(time) % 60
+    minutes = int(int(time) / 60)
+
     if seconds < 10:
         seconds = f"0{int(time) % 60}"
 
-    return f"{str(minutes)}:{str(seconds)}"
+    return f"{minutes}:{seconds}"
 
 
-def update_layout():
-    with Live(screen_layout(), refresh_per_second=4) as live:
-        try:
-            while True:
-                live.update(screen_layout())
-        except (KeyboardInterrupt, EOFError):
-            live.stop()
-            cs()
-            return
+def queue():
+    current_playlist = client.playlistinfo()
+    current_song = client.currentsong()
+    current_song_index = 0
+    current_status = client.status()
+
+    current_playlist_array = []
+    for title in current_playlist:
+        current_playlist_array.append(title)
+
+    for item in current_playlist_array:
+        if item["id"] == current_song["id"]:
+            current_song_index = current_playlist_array.index(item)
+
+    return {
+        "current song": current_song,
+        "current song index": current_song_index,
+        "current status": current_status,
+        "current playlist": current_playlist
+    }
 
 
+def currently_playing():
+    with Live(generate_table(), refresh_per_second=4) as live:
+        while True:
+            try:
+                live.update(generate_table())
+            except (KeyboardInterrupt, EOFError):
+                live.stop()
+                return

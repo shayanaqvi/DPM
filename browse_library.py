@@ -31,6 +31,7 @@ def browse_library():
                             "",
                             "directory"
                         )
+                        info_panel("⟵ Ctrl+c to exit")
                         current_level += 1
                     except (KeyboardInterrupt, EOFError):
                         pass
@@ -40,7 +41,6 @@ def browse_library():
                         user_input_1 = input("Choose: ")
                         handle_input(user_input_1, artists)
                     except (KeyboardInterrupt, EOFError):
-                        cs()
                         return
                 # level 2: display table of albums by the selected artist
                 case 2:
@@ -52,6 +52,7 @@ def browse_library():
                             artists[int(user_input_1[2:]) - 1],
                             "directory"
                         )
+                        info_panel("⟵ Ctrl+c to return")
                         current_level += 1
                     except (KeyboardInterrupt, EOFError):
                         pass
@@ -61,7 +62,6 @@ def browse_library():
                         user_input_3 = input("Choose: ")
                         handle_input(user_input_3, albums)
                     except (KeyboardInterrupt, EOFError):
-                        cs()
                         current_level -= 3
                 # level 4: display table of tracks in selected album
                 case 4:
@@ -71,6 +71,7 @@ def browse_library():
                             albums[int(user_input_3[2:]) - 1],
                             "file"
                         )
+                        info_panel("⟵ Ctrl+c to return")
                         current_level += 1
                     except (KeyboardInterrupt, EOFError):
                         pass
@@ -80,7 +81,6 @@ def browse_library():
                         user_input_5 = input("Choose: ")
                         handle_input(user_input_5, titles)
                     except (KeyboardInterrupt, EOFError):
-                        cs()
                         current_level -= 3
         except (ValueError, IndexError):
             pass
@@ -134,7 +134,6 @@ def common_browse_interface(directory_name, file_type):
     )
     list_display = generate_table(list, file_type)
     console.print(list_display)
-    info_panel("⟵ Ctrl+c to return")
     return list
 
 
