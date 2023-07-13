@@ -1,5 +1,6 @@
 # dpm
 dpm is a TUI frontend to MPD
+
 ## Features
 The feature set, at present, is somewhat limited. Right now, it can:
 - browse your library
@@ -7,17 +8,10 @@ The feature set, at present, is somewhat limited. Right now, it can:
 - manage playlist settings
 - shuffle your library
 - view the current playlist
-## Limitations
-- browsing works only with a 3-level directory structure (i.e. artist -> album -> songs)
-- managing playlist settings does not include managing the queue
-## Issues
-- if left idle for too long, the app loses connection to MPD
+
 # Installation
 - Download the executable. Place in your $PATH (i.e. ~/.local/bin)
-## Dependencies
-- Rich (install with `pip install rich`)
-- python-mpd2 (install with `pip install python-mpd2`)
-- MPD (default hostname is `"localhost"` and port is `6600`. Change this is client.py, if desired)
+
 # Usage
 Input `dpm` followed by one of the following arguments:
 - browse (b)
@@ -26,15 +20,28 @@ Input `dpm` followed by one of the following arguments:
 - options (o)
 - current (c)
 - help (h)
+
 ## browse
 Browse the library.  
-**Usage**: Input `dpm browse` or `dpm b`
+**Usage**: Input `dpm browse` or `dpm b` to access the browsing interface:
+- There are two kinds of valid operations here: (a)dd to queue, or (v)iew directory.
+
+### Adding to queue
+- Input 'a', followed by the index that corresponds to the artist/album/title you want to add to the queue. For example, to add an album at index 24, you would input "a 24".
+
+### Viewing a directory
+- Input 'v', followed by the index that corresponds to the artist/ablum you want to view. For example, to view everything under the folder at 13, you would input "v 13".
+
 ## search
 Search the library.  
-**Usage**: Input `dpm search` or `dpm f` (f for find)
+**Usage**: Input `dpm search` or `dpm f` (f for find) to access the search interface:
+- You will be prompted for a search term. Enter whatever you want to search here.
+- The app will display a table of search results. Here, the only valid operation is 'a'; its operation is the same as detailed above. 
+
 ## shuffle
 Shuffle the entire library and start playing.  
 **Usage**: Input `dpm shuffle` or `dpm s`
+
 ## options
 Manage playlist settings.  
 **Usage**: Input `dpm options` or `dpm o`. Optionally, follow this with one of the following arguments:
@@ -49,9 +56,25 @@ Manage playlist settings.
 - x (stop playback)
 - e (clear playlist)
 For example, input `dpm options x` or `dpm o x` to stop playback.
+
 ## current
-View the current playlist, including the currently playing song**.  
+View the current playlist, including the currently playing song.  
 **Usage**: input `dpm current` or `dpm c`
+
+# TODO
+- Configuration options
+- Support for playlists
+- Better interface consistency
+- Cropping the current playlist (as in `mpc crop`)
+- Playlist options reworking
+- Manipulate the positions of songs in the current queue
+
+# Limitations
+- Browsing works only with a 3-level directory structure (i.e. artist -> album -> songs). The first 2 levels need to be folders.
+
+# Issues
+- If left idle for too long, the app loses connection to MPD.
+
 # Screenshots
 ## Browsing the Library
 ![browse_library](screenshots/browse_library.png)
