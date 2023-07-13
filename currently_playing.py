@@ -91,7 +91,7 @@ def generate_table():
             )
         else:
             table.add_row(
-                    Text(str(display_index), style="dim"),
+                    Text("+" + str(display_index), style="dim"),
                     Text(item["title"], style="dim"),
                     Text(item["album"], style="dim"),
                     Text(item["artist"], style="dim"),
@@ -143,6 +143,3 @@ def currently_playing():
             except (KeyboardInterrupt, EOFError):
                 live.stop()
                 return
-
-
-currently_playing()
