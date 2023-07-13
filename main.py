@@ -1,9 +1,11 @@
 import sys
 
+from cs import cs
 from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
 from playlist_opt import playlist_options
+from currently_playing import currently_playing
 
 from rich import box
 from rich.console import Console
@@ -31,29 +33,26 @@ def main():
                 search()
             case "shuffle" | "s":
                 shuffle_library()
-            case "opt" | "o":
-                playlist_options()
+            case "option" | "o":
+                playlist_options(user_arg)
+            case "current" | "c":
+                cs()
+                currently_playing()
             case "help" | "h":
-                help = (
-                    '# Help\n'
-                    'Usage:\n'
-                    'Input `dpm` followed by one of the following arguments:\n'
-                    '- browse (`b`)\n'
-                    '- search (`f`)\n'
-                    '- shuffle (`s`)\n'
-                    '- opt (`o`)\n'
-                    '- help (`h`)\n\n'
-                    'For example, `dpm browse`, or `dpm b` will let you browse your library.'
-                )
-                console.print(
-                    Panel(
-                        Markdown(
-                            help, justify="left"
-                        ),
-                        style="green",
-                        box=box.MINIMAL
+                with open("help.md", "r") as help:
+                    contents = help.readlines()
+                    help_str = ""
+                    for item in contents:
+                        help_str += item
+                    console.print(
+                        Panel(
+                            Markdown(
+                                str(help_str), justify="left"
+                            ),
+                            style="green",
+                            box=box.ROUNDED
+                        )
                     )
-                )
             case _:
                 console.print(
                     Panel(
