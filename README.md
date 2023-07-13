@@ -1,5 +1,5 @@
 # dpm
-dpm is a TUI frontend to MPD
+dpm is just one more terminal frontend for MPD
 
 ## Features
 The feature set, at present, is somewhat limited. Right now, it can:
