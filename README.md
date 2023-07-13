@@ -1,5 +1,6 @@
 # dpm
 dpm is just one more terminal frontend for MPD
+[![asciicast](https://asciinema.org/a/596525.svg)](https://asciinema.org/a/596525)
 
 ## Features
 The feature set, at present, is somewhat limited. Right now, it can:
@@ -68,6 +69,7 @@ View the current playlist, including the currently playing song.
 - Cropping the current playlist (as in `mpc crop`)
 - Playlist options reworking
 - Manipulate the positions of songs in the current queue
+- The currently playing screen needs a bit of reworking
 
 # Limitations
 - Browsing works only with a 3-level directory structure (i.e. artist -> album -> songs). The first 2 levels need to be folders.
