@@ -104,14 +104,13 @@ def playlist_options():
         match current_level:
             case 1:
                 console.print(generate_layout())
-                info_panel("⟵ Ctrl+c to return")
+                info_panel("⟵ Ctrl+c to exit")
                 current_level += 1
             case 2:
                 try:
                     operation = input("Do: ")
                     handle_input(operation)
                 except (KeyboardInterrupt, EOFError):
-                    cs()
                     return
             case _:
                 pass

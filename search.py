@@ -22,7 +22,7 @@ def search():
             match current_level:
                 case 1:
                     try:
-                        info_panel("⟵ Ctrl+c to return to main menu")
+                        info_panel("⟵ Ctrl+c to exit")
 
                         # ask user for input
                         user_query = input("Search: ")
@@ -38,7 +38,6 @@ def search():
                         # increase level
                         current_level += 1
                     except (KeyboardInterrupt, EOFError):
-                        cs()
                         return
                 case 2:
                     try:
@@ -48,7 +47,7 @@ def search():
                         # handle input
                         handle_input(query_option, current_level, user_query_processed)
                     except (KeyboardInterrupt, EOFError):
-                        cs()
+                        print("")
                         current_level -= 1
         except (ValueError, IndexError):
             pass
