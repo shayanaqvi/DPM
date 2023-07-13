@@ -13,7 +13,7 @@ The feature set, at present, is somewhat limited. Right now, it can:
 ## Issues
 - if left idle for too long, the app loses connection to MPD
 # Installation
-- For now, clone the repository and run `main.py`
+- Download the executable. Place in your $PATH (i.e. ~/.local/bin)
 ## Dependencies
 - Rich (install with `pip install rich`)
 - python-mpd2 (install with `pip install python-mpd2`)
