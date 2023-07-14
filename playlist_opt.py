@@ -1,4 +1,5 @@
 from client import client
+from currently_playing import queue
 from info_panel import info_panel
 from cs import cs
 from Colours import colours
@@ -58,6 +59,7 @@ def generate_layout():
         "Next Track",
         "Stop Playback",
         "Clear Playlist",
+        "Crop"
     ]
 
     display_index = 1
@@ -119,6 +121,7 @@ def playlist_options(cli_arguments):
 def handle_input(input, access_type):
     confirmation = ""
     status = client.status()
+    playlist = queue()
 
     repeat_tgl = 1 if status["repeat"] == "1" else 0
     random_tgl = 1 if status["random"] == "1" else 0
@@ -128,7 +131,7 @@ def handle_input(input, access_type):
     match access_type:
         case "app":
             while True:
-                if len(input) <= 10:
+                if len(input) <= 11:
                     match input:
                         case "1":
                             repeat_tgl ^= 1
@@ -179,6 +182,16 @@ def handle_input(input, access_type):
                             client.clear()
                             info_panel("Playlist cleared")
                             break
+                        case "11":
+                            playlist = queue()
+                            status = client.status()
+                            current_song = playlist["current song"]
+                            current_song_progress = status["elapsed"]
+                            client.clear()
+                            client.add(current_song["file"])
+                            client.seek(0, current_song_progress)
+                            client.play()
+                            break
                         case _:
                             info_panel("Invalid selection")
                             break
@@ -200,7 +213,7 @@ def handle_input(input, access_type):
                         confirmation = "Random mode is on" if random_tgl == 1 else "Random mode is off"
                         info_panel(confirmation)
                         break
-                    case "c":
+                    case "a":
                         consume_tgl ^= 1
                         client.consume(consume_tgl)
                         confirmation = "Consume is on" if consume_tgl == 1 else "Consume is off"
@@ -236,6 +249,16 @@ def handle_input(input, access_type):
                     case "e":
                         client.clear()
                         info_panel("Playlist cleared")
+                        break
+                    case "c":
+                        playlist = queue()
+                        status = client.status()
+                        current_song = playlist["current song"]
+                        current_song_progress = status["elapsed"]
+                        client.clear()
+                        client.add(current_song["file"])
+                        client.seek(0, current_song_progress)
+                        client.play()
                         break
                     case _:
                         info_panel("Invalid operation")
