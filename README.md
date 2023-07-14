@@ -66,12 +66,13 @@ View the current playlist, including the currently playing song.
 # TODO
 - Configuration options
 - Support for playlists
-- Cropping the current playlist (as in `mpc crop`)
 - Playlist options reworking
 - Manipulate the positions of songs in the current queue
+- Delete certain songs from the queue
 - Search directly from the command line
 - Search filters
 - Better searching
+- Update screenshots
 
 # Limitations
 - Browsing works only with a 3-level directory structure (i.e. artist -> album -> songs). The first 2 levels need to be folders.
