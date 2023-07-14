@@ -33,7 +33,7 @@ def main():
                 search()
             case "shuffle" | "s":
                 shuffle_library()
-            case "option" | "o":
+            case "options" | "o":
                 playlist_options(user_arg)
             case "current" | "c":
                 currently_playing()

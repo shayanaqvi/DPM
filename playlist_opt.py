@@ -238,5 +238,5 @@ def handle_input(input, access_type):
                         info_panel("Playlist cleared")
                         break
                     case _:
-                        info_panel("Invalid selection")
+                        info_panel("Invalid operation")
                         break
