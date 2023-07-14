@@ -70,6 +70,7 @@ View the current playlist, including the currently playing song.
 - Playlist options reworking
 - Manipulate the positions of songs in the current queue
 - Search directly from the command line
+- Search filters
 - Better searching
 
 # Limitations
