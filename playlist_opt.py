@@ -1,5 +1,6 @@
 from client import client
 from info_panel import info_panel
+from cs import cs
 from Colours import colours
 import os
 
@@ -95,6 +96,7 @@ def playlist_options(cli_arguments):
     current_level = 1
     match len(cli_arguments):
         case 2:
+            cs()
             while True:
                 match current_level:
                     case 1:
@@ -106,6 +108,7 @@ def playlist_options(cli_arguments):
                             operation = input("Do: ")
                             handle_input(operation, "app")
                         except (KeyboardInterrupt, EOFError):
+                            cs()
                             return
                     case _:
                         pass

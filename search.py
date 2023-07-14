@@ -16,6 +16,7 @@ menu = Menu()
 
 def search():
     # initial level
+    cs()
     current_level = 1
     while True:
         try:
@@ -38,6 +39,7 @@ def search():
                         # increase level
                         current_level += 1
                     except (KeyboardInterrupt, EOFError):
+                        cs()
                         return
                 case 2:
                     try:
@@ -48,6 +50,7 @@ def search():
                         handle_input(query_option, current_level, user_query_processed)
                     except (KeyboardInterrupt, EOFError):
                         print("")
+                        cs()
                         current_level -= 1
         except (ValueError, IndexError):
             pass

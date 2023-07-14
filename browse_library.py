@@ -18,6 +18,7 @@ current_level = 0
 
 def browse_library():
     """The main function"""
+    cs()
     global current_level
     current_level = 0
     while True:
@@ -41,6 +42,7 @@ def browse_library():
                         user_input_1 = input("Choose: ")
                         handle_input(user_input_1, artists)
                     except (KeyboardInterrupt, EOFError):
+                        cs()
                         return
                 # level 2: display table of albums by the selected artist
                 case 2:

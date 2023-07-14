@@ -28,18 +28,14 @@ def main():
     else:
         match user_arg[1]:
             case "browse" | "b":
-                cs()
                 browse_library()
             case "search" | "f":
-                cs()
                 search()
             case "shuffle" | "s":
                 shuffle_library()
             case "option" | "o":
-                cs()
                 playlist_options(user_arg)
             case "current" | "c":
-                cs()
                 currently_playing()
             case "help" | "h":
                 with open("help.md", "r") as help:
@@ -53,7 +49,7 @@ def main():
                                 str(help_str), justify="left"
                             ),
                             style="green",
-                            box=box.ROUNDED
+                            box=box.MINIMAL
                         )
                     )
             case _:

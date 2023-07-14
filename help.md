@@ -30,5 +30,5 @@ Manage playlist settings.
 - e (clear playlist)
 For example, input `dpm options x` or `dpm o x` to stop playback.
 ## current
-View the current playlist, including the currently playing song**.  
+View the current playlist, including the currently playing song.  
 **Usage**: input `dpm current` or `dpm c`
