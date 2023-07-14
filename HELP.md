@@ -28,7 +28,7 @@ Manage playlist settings.
 - n (next song)
 - x (stop playback)
 - e (clear playlist)
-- c (crop playlist)
+- c (crop playlist)  
 For example, input `dpm options x` or `dpm o x` to stop playback.
 ## current
 View the current playlist, including the currently playing song.  
