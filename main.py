@@ -38,7 +38,7 @@ def main():
             case "current" | "c":
                 currently_playing()
             case "help" | "h":
-                with open("help.md", "r") as help:
+                with open("HELP.md", "r") as help:
                     contents = help.readlines()
                     help_str = ""
                     for item in contents:
