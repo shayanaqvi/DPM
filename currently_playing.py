@@ -2,7 +2,6 @@ from client import client
 
 from rich import box
 from rich.table import Table
-from rich.progress import track
 from rich.text import Text
 from rich.console import Console
 from rich.live import Live
