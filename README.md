@@ -48,7 +48,7 @@ Manage playlist settings.
 **Usage**: Input `dpm options` or `dpm o`. Optionally, follow this with one of the following arguments:
 - r (toggle repeat)
 - z (toggle random)
-- c (toggle consume)
+- a (toggle consume)
 - o (toggle single)
 - t (toggle playback)
 - s (shuffle current playlist)
@@ -56,6 +56,7 @@ Manage playlist settings.
 - n (next song)
 - x (stop playback)
 - e (clear playlist)
+- c (crop playlist)
 For example, input `dpm options x` or `dpm o x` to stop playback.
 
 ## current
@@ -65,7 +66,6 @@ View the current playlist, including the currently playing song.
 # TODO
 - Configuration options
 - Support for playlists
-- Better interface consistency
 - Cropping the current playlist (as in `mpc crop`)
 - Playlist options reworking
 - Manipulate the positions of songs in the current queue
