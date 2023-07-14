@@ -25,79 +25,87 @@ def generate_table():
     table.add_column("Length", justify="right")
 
     display_index = 1
+    try:
+        queue_raw = queue()
+        current_song = queue_raw["current song"]
+        current_song_index = queue_raw["current song index"]
+        current_status = queue_raw["current status"]
+        playlist = queue_raw["current playlist"]
 
-    queue_raw = queue()
-    current_song = queue_raw["current song"]
-    current_song_index = queue_raw["current song index"]
-    current_status = queue_raw["current status"]
-    playlist = queue_raw["current playlist"]
+        current_song_elapsed = current_status["time"]
+        current_song_elapsed_array = []
+        for item in current_song_elapsed.split(":"):
+            current_song_elapsed_array.append(item)
 
-    current_song_elapsed = current_status["time"]
-    current_song_elapsed_array = []
-    for item in current_song_elapsed.split(":"):
-        current_song_elapsed_array.append(item)
-
-    for item in playlist[current_song_index:]:
-        if item["id"] == current_song["id"]:
-            table.add_row(
-                Text(
-                    "⏵︎ " + str(display_index), style="blue"
-                ) if current_status["state"] == "play" else Text(
-                    "⏸︎ " + str(display_index), style="dim"
-                ),
-                Text(
-                    item["title"], style="red bold"
-                ) if current_status["state"] == "play" else Text(
-                    item["title"], style="red dim"
-                ),
-                Text(
-                    item["album"], style="yellow bold"
-                ) if current_status["state"] == "play" else Text(
-                    item["album"], style="yellow dim"
-                ),
-                Text(
-                    item["artist"], style="green bold"
-                ) if current_status["state"] == "play" else Text(
-                    item["artist"], style="green dim"
-                ),
-                Text(
-                    return_duration(item["time"]), style="blue"
-                ) if current_status["state"] == "play" else Text(
-                    return_duration(item["time"]), style="dim"
-                )
-            )
-            table.add_row(
-                "",
-                Text.assemble(
-                    (
-                        return_duration(current_song_elapsed_array[0]),
-                        "bold green"
+        for item in playlist[current_song_index:]:
+            if item["id"] == current_song["id"]:
+                table.add_row(
+                    Text(
+                        "⏵︎ " + str(display_index), style="blue"
                     ) if current_status["state"] == "play" else Text(
-                        return_duration(current_song_elapsed_array[0]),
-                        "dim green"
+                        "⏸︎ " + str(display_index), style="dim"
                     ),
-                    (
-                        " / ",
-                        "dim green"
+                    Text(
+                        item["title"], style="red bold"
+                    ) if current_status["state"] == "play" else Text(
+                        item["title"], style="red dim"
                     ),
-                    (
-                        return_duration(current_song_elapsed_array[1]),
-                        "dim green"
+                    Text(
+                        item["album"], style="yellow bold"
+                    ) if current_status["state"] == "play" else Text(
+                        item["album"], style="yellow dim"
+                    ),
+                    Text(
+                        item["artist"], style="green bold"
+                    ) if current_status["state"] == "play" else Text(
+                        item["artist"], style="green dim"
+                    ),
+                    Text(
+                        return_duration(item["time"]), style="blue"
+                    ) if current_status["state"] == "play" else Text(
+                        return_duration(item["time"]), style="dim"
                     )
-                ),
-                "",
-                "",
-                ""
-            )
-        else:
-            table.add_row(
-                    Text("+" + str(display_index), style="dim"),
-                    Text(item["title"], style="dim"),
-                    Text(item["album"], style="dim"),
-                    Text(item["artist"], style="dim"),
-                    Text(return_duration(item["time"]), style="dim")
                 )
-        display_index += 1
+                table.add_row(
+                    "",
+                    Text.assemble(
+                        (
+                            return_duration(current_song_elapsed_array[0]),
+                            "bold green"
+                        ) if current_status["state"] == "play" else Text(
+                            return_duration(current_song_elapsed_array[0]),
+                            "dim green"
+                        ),
+                        (
+                            " / ",
+                            "dim green"
+                        ),
+                        (
+                            return_duration(current_song_elapsed_array[1]),
+                            "dim green"
+                        )
+                    ),
+                    "",
+                    "",
+                    ""
+                )
+            else:
+                table.add_row(
+                        Text("+" + str(display_index), style="dim"),
+                        Text(item["title"], style="dim"),
+                        Text(item["album"], style="dim"),
+                        Text(item["artist"], style="dim"),
+                        Text(return_duration(item["time"]), style="dim")
+                    )
+            display_index += 1
+    except (KeyError):
+        table.add_row(
+            Text("---", style="dim"),
+            Text("Nothing is playing", style="red dim"),
+            Text("---", style="dim"),
+            Text("---", style="dim"),
+            Text("---", style="dim"),
+        )
 
     return table
 
