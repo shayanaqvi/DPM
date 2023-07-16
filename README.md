@@ -65,7 +65,9 @@ View the current playlist, including the currently playing song.
 
 # TODO
 - Configuration options
+- Playlist length in `dpm c`
 - Support for playlists
+- Preset playlists
 - Playlist options reworking
 - Manipulate the positions of songs in the current queue
 - Delete certain songs from the queue
