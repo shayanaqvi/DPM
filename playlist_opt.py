@@ -148,7 +148,6 @@ def playlist_options(cli_arguments):
 def handle_input(user_input, access_type):
     confirmation = ""
     status = client.status()
-    playlist = queue()
 
     repeat_tgl = 1 if status["repeat"] == "1" else 0
     random_tgl = 1 if status["random"] == "1" else 0
@@ -204,7 +203,6 @@ def handle_input(user_input, access_type):
                             client.play()
                             break
                         case "8":
-                            print('this feature does not work')
                             pl_name = input("Name of playlist: ")
                             client.save(pl_name)
                             break
