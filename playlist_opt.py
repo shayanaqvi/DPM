@@ -25,6 +25,15 @@ def generate_layout():
     ltable.add_column("#")
     ltable.add_column("Option")
 
+    # middle table
+    mtable = Table(
+        expand=True,
+        row_styles=["", "dim"],
+        box=box.SIMPLE_HEAD
+    )
+    mtable.add_column("#")
+    mtable.add_column("Option")
+
     # right table
     rtable = Table(
         expand=True,
@@ -38,12 +47,13 @@ def generate_layout():
     layout = Layout()
     layout.split_row(
         Layout(name="left"),
-        Layout(name="right"),
+        Layout(name="middle"),
+        Layout(name="right")
     )
 
     # layout size
     _width, _height = os.get_terminal_size()
-    console.size = (_width, 12)
+    console.size = (_width, 14)
 
     lstrings = [
         "Toggle Repeat",
@@ -53,18 +63,26 @@ def generate_layout():
         "Toggle Playback",
     ]
 
+    mstrings = [
+        "Clear",
+        "Crop",
+        "Save Current Playlist"
+    ]
+
     rstrings = [
         "Shuffle Playlist",
         "Previous Track",
         "Next Track",
         "Stop Playback",
-        "Clear Playlist",
-        "Crop"
     ]
 
     display_index = 1
     for item in lstrings:
         ltable.add_row(str(display_index), item)
+        display_index += 1
+
+    for item in mstrings:
+        mtable.add_row(str(display_index), item)
         display_index += 1
 
     for item in rstrings:
@@ -77,6 +95,15 @@ def generate_layout():
             Panel(
                 ltable,
                 title="Toggles",
+                style=colours["yellow"]
+            )
+        )
+    )
+    layout["middle"].split(
+        Layout(
+            Panel(
+                mtable,
+                title="Playlist",
                 style=colours["yellow"]
             )
         )
@@ -118,7 +145,7 @@ def playlist_options(cli_arguments):
             handle_input(cli_arguments, "cli")
 
 
-def handle_input(input, access_type):
+def handle_input(user_input, access_type):
     confirmation = ""
     status = client.status()
     playlist = queue()
@@ -131,8 +158,8 @@ def handle_input(input, access_type):
     match access_type:
         case "app":
             while True:
-                if len(input) <= 11:
-                    match input:
+                if len(user_input) <= 11:
+                    match user_input:
                         case "1":
                             repeat_tgl ^= 1
                             client.repeat(repeat_tgl)
@@ -163,26 +190,10 @@ def handle_input(input, access_type):
                             info_panel("Playback toggled")
                             break
                         case "6":
-                            client.shuffle()
-                            info_panel("Shuffled")
-                            break
-                        case "7":
-                            client.previous()
-                            info_panel("Playing previous song")
-                            break
-                        case "8":
-                            client.next()
-                            info_panel("Playing next song")
-                            break
-                        case "9":
-                            client.stop()
-                            info_panel("Playback stopped")
-                            break
-                        case "10":
                             client.clear()
                             info_panel("Playlist cleared")
                             break
-                        case "11":
+                        case "7":
                             playlist = queue()
                             status = client.status()
                             current_song = playlist["current song"]
@@ -192,6 +203,27 @@ def handle_input(input, access_type):
                             client.seek(0, current_song_progress)
                             client.play()
                             break
+                        case "8":
+                            print('this feature does not work')
+                            pl_name = input("Name of playlist: ")
+                            client.save(pl_name)
+                            break
+                        case "9":
+                            client.shuffle()
+                            info_panel("Shuffled")
+                            break
+                        case "10":
+                            client.previous()
+                            info_panel("Playing previous song")
+                            break
+                        case "11":
+                            client.next()
+                            info_panel("Playing next song")
+                            break
+                        case "12":
+                            client.stop()
+                            info_panel("Playback stopped")
+                            break
                         case _:
                             info_panel("Invalid selection")
                             break
@@ -200,7 +232,7 @@ def handle_input(input, access_type):
                     break
         case "cli":
             while True:
-                match input[2]:
+                match user_input[2]:
                     case "r":
                         repeat_tgl ^= 1
                         client.repeat(repeat_tgl)
