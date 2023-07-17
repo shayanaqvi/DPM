@@ -1,4 +1,5 @@
+*.log
+build/
+dist/
+trash/
 __pycache__/
-trash
-__pycache__
-__pycache__
