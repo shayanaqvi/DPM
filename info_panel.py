@@ -5,6 +5,7 @@ from Colours import colours
 
 
 def info_panel(information, colour):
+    """red = error, blue = information, green = affirmative action"""
     console = Console()
     panel = ""
     panel = Panel(
