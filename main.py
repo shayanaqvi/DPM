@@ -28,14 +28,17 @@ def main():
     else:
         match user_arg[1]:
             case "browse" | "b":
+                cs()
                 browse_library()
             case "search" | "f":
+                cs()
                 search()
             case "shuffle" | "s":
                 shuffle_library()
             case "options" | "o":
                 playlist_options(user_arg)
             case "current" | "c":
+                cs()
                 currently_playing()
             case "help" | "h":
                 with open("HELP.md", "r") as help:
