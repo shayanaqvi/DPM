@@ -23,7 +23,7 @@ def browse_library():
                 # Level 1: display all artists in the library
                 cs()
                 artists = client.list("artist")
-                artists_table = generate_table(artists, "artist")
+                artists_table = generate_table("Artists", artists, "artist")
                 console.print(artists_table)
                 current_level = 2
             case 2:
@@ -48,7 +48,7 @@ def browse_library():
                     else:
                         temporary_current_album = album["album"]
                         albums_by_artist.append(album)
-                albums_by_artist_table = generate_table(albums_by_artist, "album")
+                albums_by_artist_table = generate_table(user_selection_lvl_2, albums_by_artist, "album")
                 console.print(albums_by_artist_table)
                 current_level = 4
             case 4:
@@ -64,7 +64,7 @@ def browse_library():
                 cs()
                 user_selection_lvl_4 = user_selection_lvl_4_raw["album"]
                 titles_from_album = client.find("album", user_selection_lvl_4)
-                titles_from_album_table = generate_table(titles_from_album, "title")
+                titles_from_album_table = generate_table(f"{user_selection_lvl_4} - {user_selection_lvl_2}", titles_from_album, "title")
                 console.print(titles_from_album_table)
                 current_level = 6
             case 6:
@@ -77,17 +77,20 @@ def browse_library():
                     current_level = 3
 
 
-def generate_table(list_of_media, type_of_media):
+def generate_table(title, list_of_media, type_of_media):
     table = Table(
         box=box.SIMPLE,
         style="cyan"
     )
     table.add_column(
         "#",
-        header_style="cyan",
-        style="cyan"
+        header_style=colours["accent1"],
+        style=colours["accent1"]
     )
-    table.add_column("")
+    table.add_column(
+        title,
+        header_style=colours["accent1"],
+    )
     display_index = 1
 
     for item in list_of_media:
@@ -111,17 +114,17 @@ def handle_user_input(user_input, list_of_media, type_of_media, album_name=""):
             try:
                 if user_input_array[0].isdigit():
                     if current_level == 6:
-                        info_panel("This operation is not supported here", "red")
+                        info_panel("This operation is not supported here", "error")
                     else:
                         selection = list_of_media[int(user_input_array[0]) - 1]
                         current_level += 1
                         return selection
                 elif user_input_array[0] == "a":
-                    info_panel("Index not provided", "red")
+                    info_panel("Index not provided", "error")
                 else:
-                    info_panel("Invalid selection", "red")
+                    info_panel("Invalid selection", "error")
             except (IndexError):
-                info_panel("This index does not exist", "red")
+                info_panel("This index does not exist", "error")
         case 2:
             match user_input_array[0]:
                 case "a":
@@ -129,18 +132,18 @@ def handle_user_input(user_input, list_of_media, type_of_media, album_name=""):
                         if current_level == 6:
                             selection = list_of_media[int(user_input_array[1]) - 1]
                             client.findadd("album", album_name, type_of_media, selection[type_of_media])
-                            info_panel("Selection added to queue", "green")
+                            info_panel("Selection added to queue", "affirmative")
                         else:
                             selection = list_of_media[int(user_input_array[1]) - 1]
                             client.findadd(type_of_media, selection[type_of_media])
-                            info_panel("Selection added to queue", "green")
+                            info_panel("Selection added to queue", "affirmative")
                     elif user_input_array[1] == "":
-                        info_panel("Index not provided", "red")
+                        info_panel("Index not provided", "error")
                     else:
-                        info_panel("Invalid selection", "red")
+                        info_panel("Invalid selection", "error")
                 case _:
-                    info_panel("Invalid operation", "red")
+                    info_panel("Invalid operation", "error")
         case _:
-            info_panel("Invalid operation", "red")
+            info_panel("Invalid operation", "error")
 
 
