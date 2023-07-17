@@ -69,12 +69,18 @@ View the current playlist, including the currently playing song.
 - Support for playlists
 - Preset playlists
 - Playlist options reworking
-- Manipulate the positions of songs in the current queue
-- Delete certain songs from the queue
+- Manage/edit the current queue
 - Search directly from the command line
 - Search filters
 - Better searching
 - Update screenshots
+- Rewrite HELP.md
+- Manage/edit playlists
+- Play a song after the current song
+- More interface/interaction consistency
+- Clean up code
+- Better error messages
+- Give the user the option to add to queue or replace existing queue
 
 # Limitations
 - Browsing works only with a 3-level directory structure (i.e. artist -> album -> songs). The first 2 levels need to be folders.
