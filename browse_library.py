@@ -23,8 +23,8 @@ def browse_library():
                 # Level 1: display all artists in the library
                 cs()
                 artists = client.list("artist")
-                for artist in artists:
-                    console.print(artist["artist"])
+                artists_table = generate_table(artists, "artist")
+                console.print(artists_table)
                 current_level = 2
             case 2:
                 # Level 2: get input from user
@@ -46,9 +46,10 @@ def browse_library():
                     if album["album"] == temporary_current_album:
                         pass
                     else:
-                        console.print(album["album"])
                         temporary_current_album = album["album"]
                         albums_by_artist.append(album)
+                albums_by_artist_table = generate_table(albums_by_artist, "album")
+                console.print(albums_by_artist_table)
                 current_level = 4
             case 4:
                 # Level 4: get input from user
@@ -63,20 +64,43 @@ def browse_library():
                 cs()
                 user_selection_lvl_4 = user_selection_lvl_4_raw["album"]
                 titles_from_album = client.find("album", user_selection_lvl_4)
-                for title in titles_from_album:
-                    console.print(title["title"])
+                titles_from_album_table = generate_table(titles_from_album, "title")
+                console.print(titles_from_album_table)
                 current_level = 6
             case 6:
                 # Level 6: get input from user
                 try:
                     user_input_lvl_6 = input("Do: ")
-                    handle_user_input(user_input_lvl_6, titles_from_album, "title")
+                    handle_user_input(user_input_lvl_6, titles_from_album, "title", user_selection_lvl_4)
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     current_level = 3
 
 
-def handle_user_input(user_input, list_of_media, type_of_media):
+def generate_table(list_of_media, type_of_media):
+    table = Table(
+        box=box.SIMPLE,
+        style="cyan"
+    )
+    table.add_column(
+        "#",
+        header_style="cyan",
+        style="cyan"
+    )
+    table.add_column("")
+    display_index = 1
+
+    for item in list_of_media:
+        table.add_row(
+            str(display_index),
+            item[type_of_media]
+        )
+        display_index += 1
+
+    return table
+
+
+def handle_user_input(user_input, list_of_media, type_of_media, album_name=""):
     global current_level
     user_input_array = []
     for item in user_input.split(" "):
@@ -86,24 +110,37 @@ def handle_user_input(user_input, list_of_media, type_of_media):
         case 1:
             try:
                 if user_input_array[0].isdigit():
-                    selection = list_of_media[int(user_input_array[0]) - 1]
-                    current_level += 1
-                    return selection
+                    if current_level == 6:
+                        info_panel("This operation is not supported here", "red")
+                    else:
+                        selection = list_of_media[int(user_input_array[0]) - 1]
+                        current_level += 1
+                        return selection
+                elif user_input_array[0] == "a":
+                    info_panel("Index not provided", "red")
+                else:
+                    info_panel("Invalid selection", "red")
             except (IndexError):
-                info_panel("This index does not exist")
+                info_panel("This index does not exist", "red")
         case 2:
             match user_input_array[0]:
                 case "a":
                     if user_input_array[1].isdigit():
-                        selection = list_of_media[int(user_input_array[1]) - 1]
-                        client.findadd(type_of_media, selection[type_of_media])
-                        info_panel("Selection added to queue")
+                        if current_level == 6:
+                            selection = list_of_media[int(user_input_array[1]) - 1]
+                            client.findadd("album", album_name, type_of_media, selection[type_of_media])
+                            info_panel("Selection added to queue", "green")
+                        else:
+                            selection = list_of_media[int(user_input_array[1]) - 1]
+                            client.findadd(type_of_media, selection[type_of_media])
+                            info_panel("Selection added to queue", "green")
+                    elif user_input_array[1] == "":
+                        info_panel("Index not provided", "red")
                     else:
-                        info_panel("Invalid selection")
+                        info_panel("Invalid selection", "red")
                 case _:
-                    info_panel("Invalid operation")
+                    info_panel("Invalid operation", "red")
         case _:
-            info_panel("Invalid operation")
+            info_panel("Invalid operation", "red")
 
 
-browse_library()
