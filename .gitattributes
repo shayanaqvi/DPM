@@ -1,2 +1,15 @@
 *.html linguist-detectable=false
 *.tex linguist-detectable=false
+*.aux linguist-detectable=false
+*.bbx linguist-detectable=false
+*.cbx linguist-detectable=false
+*.cls linguist-detectable=false
+*.dtx linguist-detectable=false
+*.ins linguist-detectable=false
+*.lbx linguist-detectable=false
+*.ltx linguist-detectable=false
+*.mkii linguist-detectable=false
+*.mkiv linguist-detectable=false
+*.mkvi linguist-detectable=false
+*.sty linguist-detectable=false
+*.toc linguist-detectable=false
