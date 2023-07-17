@@ -19,30 +19,42 @@ def generate_layout():
     # left table
     ltable = Table(
         expand=True,
-        row_styles=["", "dim"],
-        box=box.SIMPLE_HEAD
+        box=box.SIMPLE,
+        style=colours["accent1"]
     )
-    ltable.add_column("#")
-    ltable.add_column("Option")
+    ltable.add_column(
+        "#",
+        style=colours["accent1"],
+        header_style=colours["accent1"]
+    )
+    ltable.add_column(
+        "Toggles",
+        header_style=colours["accent1"]
+    )
 
     # middle table
     mtable = Table(
         expand=True,
-        row_styles=["", "dim"],
-        box=box.SIMPLE_HEAD
+        box=box.SIMPLE,
+        style=colours["accent1"]
     )
-    mtable.add_column("#")
-    mtable.add_column("Option")
+    mtable.add_column("#", style=colours["accent1"], header_style=colours["accent1"])
+    mtable.add_column(
+        "Playlist",
+        header_style=colours["accent1"]
+    )
 
     # right table
     rtable = Table(
         expand=True,
-        row_styles=["", "dim"],
-        box=box.SIMPLE_HEAD
+        box=box.SIMPLE,
+        style=colours["accent1"]
     )
-    rtable.add_column("#")
-    rtable.add_column("Option")
-
+    rtable.add_column("#", style=colours["accent1"], header_style=colours["accent1"])
+    rtable.add_column(
+        "Playback",
+        header_style=colours["accent1"]
+    )
     # layout
     layout = Layout()
     layout.split_row(
@@ -53,7 +65,7 @@ def generate_layout():
 
     # layout size
     _width, _height = os.get_terminal_size()
-    console.size = (_width, 14)
+    console.size = (_width, 9)
 
     lstrings = [
         "Toggle Repeat",
@@ -92,29 +104,17 @@ def generate_layout():
     # add to layout
     layout["left"].split(
         Layout(
-            Panel(
                 ltable,
-                title="Toggles",
-                style=colours["yellow"]
-            )
         )
     )
     layout["middle"].split(
         Layout(
-            Panel(
                 mtable,
-                title="Playlist",
-                style=colours["yellow"]
-            )
         )
     )
     layout["right"].split(
         Layout(
-            Panel(
                 rtable,
-                title="Playback",
-                style=colours["yellow"]
-            )
         )
     )
 
@@ -130,7 +130,7 @@ def playlist_options(cli_arguments):
                 match current_level:
                     case 1:
                         console.print(generate_layout())
-                        info_panel("⟵ Ctrl+c to exit")
+                        info_panel("⟵ Ctrl+c to exit", "information")
                         current_level += 1
                     case 2:
                         try:
@@ -163,34 +163,34 @@ def handle_input(user_input, access_type):
                             repeat_tgl ^= 1
                             client.repeat(repeat_tgl)
                             confirmation = "Repeat is on" if repeat_tgl == 1 else "Repeat is off"
-                            info_panel(confirmation)
+                            info_panel(confirmation, "affirmative")
                             break
                         case "2":
                             random_tgl ^= 1
                             client.random(random_tgl)
                             confirmation = "Random mode is on" if random_tgl == 1 else "Random mode is off"
-                            info_panel(confirmation)
+                            info_panel(confirmation, "affirmative")
                             break
                         case "3":
                             consume_tgl ^= 1
                             client.consume(consume_tgl)
                             confirmation = "Consume is on" if consume_tgl == 1 else "Consume is off"
-                            info_panel(confirmation)
+                            info_panel(confirmation, "affirmative")
                             break
                         case "4":
                             single_tgl ^= 1
                             client.single(single_tgl)
                             confirmation = "Single mode is on" if single_tgl == 1 else "Single mode is off"
-                            info_panel(confirmation)
+                            info_panel(confirmation, "affirmative")
                             break
                         case "5":
                             # check if toggle is needed
                             client.pause()
-                            info_panel("Playback toggled")
+                            info_panel("Playback toggled", "affirmative")
                             break
                         case "6":
                             client.clear()
-                            info_panel("Playlist cleared")
+                            info_panel("Playlist cleared", "affirmative")
                             break
                         case "7":
                             playlist = queue()
@@ -208,25 +208,25 @@ def handle_input(user_input, access_type):
                             break
                         case "9":
                             client.shuffle()
-                            info_panel("Shuffled")
+                            info_panel("Shuffled", "affirmative")
                             break
                         case "10":
                             client.previous()
-                            info_panel("Playing previous song")
+                            info_panel("Playing previous song", "affirmative")
                             break
                         case "11":
                             client.next()
-                            info_panel("Playing next song")
+                            info_panel("Playing next song", "affirmative")
                             break
                         case "12":
                             client.stop()
-                            info_panel("Playback stopped")
+                            info_panel("Playback stopped", "affirmative")
                             break
                         case _:
-                            info_panel("Invalid selection")
+                            info_panel("Invalid selection", "error")
                             break
                 else:
-                    info_panel("Invalid selection")
+                    info_panel("Invalid selection", "error")
                     break
         case "cli":
             while True:
@@ -235,50 +235,50 @@ def handle_input(user_input, access_type):
                         repeat_tgl ^= 1
                         client.repeat(repeat_tgl)
                         confirmation = "Repeat is on" if repeat_tgl == 1 else "Repeat is off"
-                        info_panel(confirmation)
+                        info_panel(confirmation, "affirmative")
                         break
                     case "z":
                         random_tgl ^= 1
                         client.random(random_tgl)
                         confirmation = "Random mode is on" if random_tgl == 1 else "Random mode is off"
-                        info_panel(confirmation)
+                        info_panel(confirmation, "affirmative")
                         break
                     case "a":
                         consume_tgl ^= 1
                         client.consume(consume_tgl)
                         confirmation = "Consume is on" if consume_tgl == 1 else "Consume is off"
-                        info_panel(confirmation)
+                        info_panel(confirmation, "affirmative")
                         break
                     case "o":
                         single_tgl ^= 1
                         client.single(single_tgl)
                         confirmation = "Single mode is on" if single_tgl == 1 else "Single mode is off"
-                        info_panel(confirmation)
+                        info_panel(confirmation, "affirmative")
                         break
                     case "t":
                         # check if toggle is needed
                         client.pause()
-                        info_panel("Playback toggled")
+                        info_panel("Playback toggled", "affirmative")
                         break
                     case "s":
                         client.shuffle()
-                        info_panel("Shuffled")
+                        info_panel("Shuffled", "affirmative")
                         break
                     case "p":
                         client.previous()
-                        info_panel("Playing previous song")
+                        info_panel("Playing previous song", "affirmative")
                         break
                     case "n":
                         client.next()
-                        info_panel("Playing next song")
+                        info_panel("Playing next song", "affirmative")
                         break
                     case "x":
                         client.stop()
-                        info_panel("Playback stopped")
+                        info_panel("Playback stopped", "affirmative")
                         break
                     case "e":
                         client.clear()
-                        info_panel("Playlist cleared")
+                        info_panel("Playlist cleared", "affirmative")
                         break
                     case "c":
                         playlist = queue()
@@ -291,5 +291,5 @@ def handle_input(user_input, access_type):
                         client.play()
                         break
                     case _:
-                        info_panel("Invalid operation")
+                        info_panel("Invalid operation", "error")
                         break
