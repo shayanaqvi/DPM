@@ -23,7 +23,7 @@ def search():
             match current_level:
                 case 1:
                     try:
-                        info_panel("⟵ Ctrl+c to exit")
+                        info_panel("⟵ Ctrl+c to exit", "blue")
 
                         # ask user for input
                         user_query = input("Search: ")
@@ -34,7 +34,7 @@ def search():
                         table = generate_table(user_query_processed)
                         cs()
                         console.print(table)
-                        info_panel("⟵ Ctrl+c to return to search")
+                        info_panel("⟵ Ctrl+c to return to search", "blue")
 
                         # increase level
                         current_level += 1
@@ -74,7 +74,7 @@ def handle_input(input, current_level, processed_query):
     # check for length of array
     match len(input_array):
         case 1:
-            info_panel("Invalid selection")
+            info_panel("Invalid selection", "red")
         case 2:
             match input_array[0]:
                 # check if the letter at the 0th index is acceptable
@@ -82,14 +82,14 @@ def handle_input(input, current_level, processed_query):
                     if input_array[1].isdigit():
                         # add selection to queue
                         media_selection = processed_query[int(input_array[1]) - 1]
-                        info_panel("Added!")
+                        info_panel("Added!", "green")
                         client.add(media_selection["file"])
                     else:
-                        info_panel("Invalid selection")
+                        info_panel("Invalid selection", "red")
                 case _:
-                    info_panel("Invalid selection")
+                    info_panel("Invalid selection", "red")
         case _:
-            info_panel("Invalid selection")
+            info_panel("Invalid selection", "red")
 
 
 def generate_table(processed_query):
@@ -98,14 +98,13 @@ def generate_table(processed_query):
 
     # define the table
     query_result_table = Table(
-        expand=True,
-        box=box.SIMPLE_HEAD,
+        box=box.SIMPLE,
         row_styles=["", "dim"]
     )
-    query_result_table.add_column("Artist")
-    query_result_table.add_column("#")
+    query_result_table.add_column("Artist", style="cyan")
+    query_result_table.add_column("#", style="cyan")
     query_result_table.add_column("Title")
-    query_result_table.add_column("Album")
+    query_result_table.add_column("Album", style="cyan")
 
     # add items to table
     for item in processed_query:
@@ -118,5 +117,4 @@ def generate_table(processed_query):
         display_index += 1
 
     # put table into panel
-    panel = Panel(query_result_table, title="Search Results", style=colours["magenta"])
-    return panel
+    return query_result_table
