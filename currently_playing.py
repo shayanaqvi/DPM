@@ -36,31 +36,33 @@ def generate_table():
         for item in current_song_elapsed.split(":"):
             current_song_elapsed_array.append(item)
 
-        for item in playlist[current_song_index:]:
+        # everything 75 places ahead of the current song index will be
+        # added to the table
+        for item in playlist[current_song_index:current_song_index+75]:
             if item["id"] == current_song["id"]:
                 table.add_row(
                     Text(
-                        "⏵︎ " + str(display_index), style="blue"
+                        "⏵︎ " + str(display_index), style="cyan"
                     ) if current_status["state"] == "play" else Text(
                         "⏸︎ " + str(display_index), style="dim"
                     ),
                     Text(
-                        item["title"], style="red bold"
+                        item["title"], style="green reverse bold"
                     ) if current_status["state"] == "play" else Text(
-                        item["title"], style="red dim"
+                        item["title"], style="green dim"
                     ),
                     Text(
-                        item["album"], style="yellow bold"
+                        item["album"], style="bold yellow"
                     ) if current_status["state"] == "play" else Text(
                         item["album"], style="yellow dim"
                     ),
                     Text(
-                        item["artist"], style="green bold"
+                        item["artist"], style="bold red"
                     ) if current_status["state"] == "play" else Text(
-                        item["artist"], style="green dim"
+                        item["artist"], style="red dim"
                     ),
                     Text(
-                        return_duration(item["time"]), style="blue"
+                        return_duration(item["time"]), style="cyan"
                     ) if current_status["state"] == "play" else Text(
                         return_duration(item["time"]), style="dim"
                     )
