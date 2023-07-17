@@ -12,164 +12,98 @@ from rich.panel import Panel
 
 menu = Menu()
 console = Console()
-
-current_level = 0
+current_level = 1
 
 
 def browse_library():
-    """The main function"""
-    cs()
     global current_level
-    current_level = 0
     while True:
-        try:
-            match current_level:
-                # level 0: display table of artists
-                case 0:
-                    try:
-                        cs()
-                        artists = common_browse_interface(
-                            "",
-                            "directory"
-                        )
-                        info_panel("⟵ Ctrl+c to exit")
-                        current_level += 1
-                    except (KeyboardInterrupt, EOFError):
+        match current_level:
+            case 1:
+                # Level 1: display all artists in the library
+                cs()
+                artists = client.list("artist")
+                for artist in artists:
+                    console.print(artist["artist"])
+                current_level = 2
+            case 2:
+                # Level 2: get input from user
+                try:
+                    user_input_lvl_2 = input("Do: ")
+                    user_selection_lvl_2_raw = handle_user_input(user_input_lvl_2, artists, "artist")
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    return
+            case 3:
+                # Level 3: display albums from the selected artist
+                cs()
+                user_selection_lvl_2 = user_selection_lvl_2_raw["artist"]
+                albums_by_artist_raw = client.find("artist", user_selection_lvl_2)
+                albums_by_artist = []
+                # this variable will ensure that the same album isn't printed multiple times
+                temporary_current_album = ""
+                for album in albums_by_artist_raw:
+                    if album["album"] == temporary_current_album:
                         pass
-                # level 1: ask user to choose an artist
-                case 1:
-                    try:
-                        user_input_1 = input("Choose: ")
-                        handle_input(user_input_1, artists)
-                    except (KeyboardInterrupt, EOFError):
-                        cs()
-                        return
-                # level 2: display table of albums by the selected artist
-                case 2:
-                    try:
-                        cs()
-                        albums = common_browse_interface(
-                            # the final index is everything ahead of the 3rd
-                            # position in user_input_1
-                            artists[int(user_input_1[2:]) - 1],
-                            "directory"
-                        )
-                        info_panel("⟵ Ctrl+c to return")
-                        current_level += 1
-                    except (KeyboardInterrupt, EOFError):
-                        pass
-                # level 3: ask user to choose an albm
-                case 3:
-                    try:
-                        user_input_3 = input("Choose: ")
-                        handle_input(user_input_3, albums)
-                    except (KeyboardInterrupt, EOFError):
-                        current_level -= 3
-                # level 4: display table of tracks in selected album
-                case 4:
-                    try:
-                        cs()
-                        titles = common_browse_interface(
-                            albums[int(user_input_3[2:]) - 1],
-                            "file"
-                        )
-                        info_panel("⟵ Ctrl+c to return")
-                        current_level += 1
-                    except (KeyboardInterrupt, EOFError):
-                        pass
-                # level 5: ask user to select tracks
-                case 5:
-                    try:
-                        user_input_5 = input("Choose: ")
-                        handle_input(user_input_5, titles)
-                    except (KeyboardInterrupt, EOFError):
-                        current_level -= 3
-        except (ValueError, IndexError):
-            pass
+                    else:
+                        console.print(album["album"])
+                        temporary_current_album = album["album"]
+                        albums_by_artist.append(album)
+                current_level = 4
+            case 4:
+                # Level 4: get input from user
+                try:
+                    user_input_lvl_4 = input("Do: ")
+                    user_selection_lvl_4_raw = handle_user_input(user_input_lvl_4, albums_by_artist, "album")
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    current_level = 1
+            case 5:
+                # Level 5: display tracks from the selected album
+                cs()
+                user_selection_lvl_4 = user_selection_lvl_4_raw["album"]
+                titles_from_album = client.find("album", user_selection_lvl_4)
+                for title in titles_from_album:
+                    console.print(title["title"])
+                current_level = 6
+            case 6:
+                # Level 6: get input from user
+                try:
+                    user_input_lvl_6 = input("Do: ")
+                    handle_user_input(user_input_lvl_6, titles_from_album, "title")
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    current_level = 3
 
 
-def handle_input(input, processed_query):
-    """Handle user input"""
+def handle_user_input(user_input, list_of_media, type_of_media):
     global current_level
-    input_array = []
-    for item in input.split(" "):
-        input_array.append(item)
+    user_input_array = []
+    for item in user_input.split(" "):
+        user_input_array.append(item)
 
-    # check for length of array
-    match len(input_array):
+    match len(user_input_array):
         case 1:
-            info_panel("Invalid selection")
+            try:
+                if user_input_array[0].isdigit():
+                    selection = list_of_media[int(user_input_array[0]) - 1]
+                    current_level += 1
+                    return selection
+            except (IndexError):
+                info_panel("This index does not exist")
         case 2:
-            match input_array[0]:
-                # check if the letter at the 0th index is acceptable
-                # error messaging for a selection out of possible indices
+            match user_input_array[0]:
                 case "a":
-                    if input_array[1].isdigit():
-                        # add selection to queue
-                        media_selection = processed_query[int(input_array[1]) - 1]
-                        info_panel("Added!")
-                        client.add(media_selection)
+                    if user_input_array[1].isdigit():
+                        selection = list_of_media[int(user_input_array[1]) - 1]
+                        client.findadd(type_of_media, selection[type_of_media])
+                        info_panel("Selection added to queue")
                     else:
                         info_panel("Invalid selection")
-                case "v":
-                    if current_level == 5:
-                        info_panel("Invalid selection")
-                    else:
-                        if input_array[1].isdigit():
-                            if int(input_array[1]) > len(processed_query):
-                                info_panel("Invalid selection")
-                            else:
-                                current_level += 1
-                        else:
-                            info_panel("Invalid selection")
                 case _:
-                    info_panel("Invalid selection")
+                    info_panel("Invalid operation")
         case _:
-            info_panel("Invalid selection")
+            info_panel("Invalid operation")
 
 
-def common_browse_interface(directory_name, file_type):
-    """Common interface for browsing the library"""
-    list = menu.list_directory(
-        directory_name,
-        file_type
-    )
-    list_display = generate_table(list, file_type)
-    console.print(list_display)
-    return list
-
-
-def generate_table(media_list, file_type):
-    """Generate a table"""
-    display_index = 1
-
-    result_table = Table(
-        expand=True,
-        box=box.SIMPLE_HEAD,
-        row_styles=["", "dim"]
-    )
-    result_table.add_column("#")
-    result_table.add_column("Title")
-
-    match file_type:
-        case "directory":
-            for item in media_list:
-                result_table.add_row(
-                    str(display_index),
-                    f"🗀  {item}"
-                )
-                display_index += 1
-        case "file":
-            for item in media_list:
-                result_table.add_row(
-                    str(display_index),
-                    f"𝅘𝅥𝅮 {item}"
-                )
-                display_index += 1
-
-    panel = Panel(
-        result_table,
-        title="Browse Library",
-        style=colours["blue"]
-    )
-    return panel
+browse_library()
