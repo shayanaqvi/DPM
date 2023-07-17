@@ -7,7 +7,6 @@ from Colours import colours
 from rich import box
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 
 
 menu = Menu()
@@ -80,7 +79,7 @@ def browse_library():
 def generate_table(title, list_of_media, type_of_media):
     table = Table(
         box=box.SIMPLE,
-        style="cyan"
+        style=colours["accent1"]
     )
     table.add_column(
         "#",

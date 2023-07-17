@@ -78,7 +78,6 @@ def generate_layout():
     mstrings = [
         "Clear",
         "Crop",
-        "Save Current Playlist"
     ]
 
     rstrings = [
@@ -203,22 +202,18 @@ def handle_input(user_input, access_type):
                             client.play()
                             break
                         case "8":
-                            pl_name = input("Name of playlist: ")
-                            client.save(pl_name)
-                            break
-                        case "9":
                             client.shuffle()
                             info_panel("Shuffled", "affirmative")
                             break
-                        case "10":
+                        case "9":
                             client.previous()
                             info_panel("Playing previous song", "affirmative")
                             break
-                        case "11":
+                        case "10":
                             client.next()
                             info_panel("Playing next song", "affirmative")
                             break
-                        case "12":
+                        case "11":
                             client.stop()
                             info_panel("Playback stopped", "affirmative")
                             break
@@ -257,6 +252,7 @@ def handle_input(user_input, access_type):
                         break
                     case "t":
                         # check if toggle is needed
+                        # start playback if it hasn't started yet
                         client.pause()
                         info_panel("Playback toggled", "affirmative")
                         break

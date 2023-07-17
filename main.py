@@ -1,6 +1,7 @@
 import sys
 
 from cs import cs
+from info_panel import info_panel
 from shuffle import shuffle_library
 from browse_library import browse_library
 from search import search
@@ -18,13 +19,14 @@ console = Console()
 def main():
     user_arg = sys.argv
     if len(user_arg) == 1:
-        console.print(
-            Panel(
-                "dpm: no arguments provided\nInput 'dpm help' for more information",
-                style="red",
-                box=box.MINIMAL
-            )
-        )
+        # console.print(
+        #     Panel(
+        #         "dpm: no arguments provided\nInput 'dpm help' for more information",
+        #         style="red",
+        #         box=box.MINIMAL
+        #     )
+        # )
+        info_panel("dpm: no arguments provided\nInput 'dpm help' for more information", "information")
     else:
         match user_arg[1]:
             case "browse" | "b":
