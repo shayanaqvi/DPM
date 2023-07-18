@@ -46,7 +46,7 @@ def populate_table(table_to_populate, population: list):
     return table
 
 
-def handle_input(user_input, list_of_media):
+def handle_input(user_input, list_of_media, type_of_media):
     global current_level
 
     # split the user's input into an array
@@ -77,6 +77,9 @@ def handle_input(user_input, list_of_media):
                 # if 'a' was input with no index
                 elif user_input_array[0] == "a":
                     console.print("No index was supplied")
+                # if any other data type is supplied
+                else:
+                    console.print("Invalid operation")
 
             # if the user selects an invalid index
             except (IndexError):
@@ -84,7 +87,17 @@ def handle_input(user_input, list_of_media):
 
         # add an item to the queue
         case 2:
-            pass
+            # check if an acceptible letter was input, in this case only 'a' is accepted
+            match user_input_array[0]:
+                case "a":
+                    # use isinstance()?
+                    # check if an integer has been input after 'a'
+                    if user_input_array[1].isdigit():
+                        selection = list_of_media[int(user_input_array[1]) - 1]
+                        client.findadd(type_of_media, selection)
+                        # console.print(selection)
+                case _:
+                    pass
         # invalid input
         case _:
             pass
@@ -132,7 +145,7 @@ def main():
                 # Level 2: get input form the user
                 try:
                     user_input_unprocessed = input(": ")  # unprocessed user input
-                    user_input = handle_input(user_input_unprocessed, artists)  # have the user's input processed
+                    user_input = handle_input(user_input_unprocessed, artists, "artist")  # have the user's input processed
                     console.print(user_input)
                 except (KeyboardInterrupt, EOFError):
                     cs()
