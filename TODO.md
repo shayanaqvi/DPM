@@ -1,0 +1,1 @@
+- central and sensible colouring system for the user interface
