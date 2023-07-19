@@ -73,7 +73,6 @@ def handle_input(user_input, list_of_media, type_of_media):
                         selection = list_of_media[int(user_input_array[0]) - 1]
                         current_level += 1
                         return selection
-
                 # if 'a' was input with no index
                 elif user_input_array[0] == "a":
                     console.print("No index was supplied")
@@ -94,13 +93,15 @@ def handle_input(user_input, list_of_media, type_of_media):
                     # check if an integer has been input after 'a'
                     if user_input_array[1].isdigit():
                         selection = list_of_media[int(user_input_array[1]) - 1]
+                        # add the user's selection to the queue
                         client.findadd(type_of_media, selection)
-                        # console.print(selection)
+                    elif user_input_array[1] == "":
+                        console.print("No index was supplied")
                 case _:
-                    pass
+                    console.print("Invalid operation")
         # invalid input
         case _:
-            pass
+            console.print("Invalid operation")
 
 
 def process_output(output, type_of_media):
@@ -142,22 +143,45 @@ def main():
 
                 current_level += 1 # go to the next level
             case 2:
-                # Level 2: get input form the user
+                # Level 2: ask user to select an artist
                 try:
-                    user_input_unprocessed = input(": ")  # unprocessed user input
-                    user_input = handle_input(user_input_unprocessed, artists, "artist")  # have the user's input processed
-                    console.print(user_input)
+                    user_input_unprocessed_2 = input(": ")  # unprocessed user input
+                    user_input_2 = handle_input(user_input_unprocessed_2, artists, "artist")  # have the user's input processed
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     return
             case 3:
-                pass
+                # Level 3: display albums by the selected artist
+                cs()
+                albums_unprocessed = client.find("artist", user_input_2)
+                albums = process_output(albums_unprocessed, "album")
+                display_media(albums, user_input_2)  # user_input is the name of the selected artist
+
+                current_level += 1  # go to the next level
             case 4:
-                pass
+                # Level 4: ask user to select an album
+                try:
+                    user_input_unprocessed_4 = input(": ")
+                    user_input_4 = handle_input(user_input_unprocessed_4, albums, "album")
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    current_level -= 3
             case 5:
-                pass
+                # Level 5: display songs in the selected album
+                cs()
+                titles_unprocessed = client.find("album", user_input_4)
+                titles = process_output(titles_unprocessed, "title")
+                display_media(titles, f"{user_input_2}: {user_input_4}")
+
+                current_level += 1
             case 6:
-                pass
+                # Level 6: ask user to select titles
+                try:
+                    user_input_unprocessed_6 = input(": ")
+                    handle_input(user_input_unprocessed_6, titles, "title")
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    current_level -= 3
 
 
 main()
