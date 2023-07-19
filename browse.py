@@ -1,6 +1,8 @@
 from client import client
 from cs import cs
 
+from Tables import Tables
+
 from rich.console import Console
 from rich.table import Table
 from rich import box
@@ -8,42 +10,6 @@ from rich import box
 
 console = Console()
 current_level = 1
-
-
-def generate_table(columns: list):
-    # ADD THIS TO A CLASS
-    table = Table(
-        box=box.SIMPLE,
-        style="cyan"
-    )
-
-    table.add_column(
-        "#",
-        style="cyan",
-        header_style="cyan"
-    )
-
-    # add columns to the table
-    for name in columns:
-        table.add_column(
-            name,
-            header_style="cyan"
-        )
-
-    return table
-
-
-def populate_table(table_to_populate, population: list):
-    table = table_to_populate
-
-    # loop through the items in population[], add them to the table
-    for i, populant in enumerate(population):
-        table.add_row(
-            str(i+1),  # add indexes to the table
-            populant
-        )
-
-    return table
 
 
 def handle_input(user_input, list_of_media, type_of_media):
@@ -125,13 +91,13 @@ def process_output(output, type_of_media):
 
 
 def display_table(list_of_media, table_title):
-    table_unpopulated = generate_table([table_title])
-    table = populate_table(table_unpopulated, list_of_media)
+    table_unpopulated = Tables.generate_table([table_title])
+    table = Tables.populate_table(table_unpopulated, list_of_media)
     console.print(table)  # the table is printed here
 
 
 def get_user_input(list_of_media, type_of_media):
-    user_input_unprocessed = input(": ")
+    user_input_unprocessed = input("➙ ")
     user_input = handle_input(user_input_unprocessed, list_of_media, type_of_media)
     return user_input
 
