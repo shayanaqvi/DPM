@@ -67,7 +67,7 @@ def handle_input(user_input, list_of_media, type_of_media):
                 if user_input_array[0].isdigit():
                     # this operation is not supported at level 6
                     if current_level == 6:
-                        pass
+                        console.print("This operation is not supported here")
                     else:
                         # return the item at the index selected by the user
                         selection = list_of_media[int(user_input_array[0]) - 1]
@@ -124,10 +124,16 @@ def process_output(output, type_of_media):
             return output_array
 
 
-def display_media(list_of_media, table_title):
+def display_table(list_of_media, table_title):
     table_unpopulated = generate_table([table_title])
     table = populate_table(table_unpopulated, list_of_media)
     console.print(table)  # the table is printed here
+
+
+def get_user_input(list_of_media, type_of_media):
+    user_input_unprocessed = input(": ")
+    user_input = handle_input(user_input_unprocessed, list_of_media, type_of_media)
+    return user_input
 
 
 def main():
@@ -139,14 +145,13 @@ def main():
                 cs()
                 artists_unprocessed = client.list("artist")  # get raw output
                 artists = process_output(artists_unprocessed, "artist")  # process the raw output
-                display_media(artists, "Artists")  # display the artists
+                display_table(artists, "Artists")  # display the artists
 
                 current_level += 1 # go to the next level
             case 2:
                 # Level 2: ask user to select an artist
                 try:
-                    user_input_unprocessed_2 = input(": ")  # unprocessed user input
-                    user_input_2 = handle_input(user_input_unprocessed_2, artists, "artist")  # have the user's input processed
+                    user_input_2 = get_user_input(artists, "artist")
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     return
@@ -155,14 +160,13 @@ def main():
                 cs()
                 albums_unprocessed = client.find("artist", user_input_2)
                 albums = process_output(albums_unprocessed, "album")
-                display_media(albums, user_input_2)  # user_input is the name of the selected artist
+                display_table(albums, user_input_2)  # user_input is the name of the selected artist
 
                 current_level += 1  # go to the next level
             case 4:
                 # Level 4: ask user to select an album
                 try:
-                    user_input_unprocessed_4 = input(": ")
-                    user_input_4 = handle_input(user_input_unprocessed_4, albums, "album")
+                    user_input_4 = get_user_input(albums, "album")
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     current_level -= 3
@@ -171,14 +175,15 @@ def main():
                 cs()
                 titles_unprocessed = client.find("album", user_input_4)
                 titles = process_output(titles_unprocessed, "title")
-                display_media(titles, f"{user_input_2}: {user_input_4}")
+                display_table(titles, f"{user_input_2}: {user_input_4}")
 
                 current_level += 1
             case 6:
                 # Level 6: ask user to select titles
                 try:
-                    user_input_unprocessed_6 = input(": ")
-                    handle_input(user_input_unprocessed_6, titles, "title")
+                    # user_input_unprocessed_6 = input(": ")
+                    # handle_input(user_input_unprocessed_6, titles, "title")
+                    get_user_input(titles, "title")
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     current_level -= 3
