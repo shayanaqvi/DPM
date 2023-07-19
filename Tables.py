@@ -16,7 +16,8 @@ class Tables():
         table.add_column(
             "#",
             style="cyan",
-            header_style="cyan"
+            header_style="cyan",
+            justify="right"
         )
 
         # loop through the provided column names, add them to the table
