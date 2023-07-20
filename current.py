@@ -1,4 +1,5 @@
 from client import client
+from cs import cs
 
 from rich import box
 from rich.table import Table
@@ -155,6 +156,7 @@ def queue():
 
 
 def currently_playing():
+    cs()
     try:
         with Live(generate_table(), refresh_per_second=4) as live:
             while True:
