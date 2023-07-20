@@ -122,7 +122,7 @@ def handle_input(user_input, client_status):
                     case "8":
                         play_pause(client_status)
                     case "9":
-                        stop_playback(client_status)
+                        stop_playback()
                     case "10":
                         next_previous("next")
                     case "11":
@@ -168,6 +168,3 @@ def main():
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     return
-
-
-main()
