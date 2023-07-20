@@ -4,8 +4,6 @@ from cs import cs
 from Tables import Tables
 
 from rich.console import Console
-from rich.table import Table
-from rich import box
 
 
 console = Console()
@@ -20,7 +18,6 @@ def handle_input(user_input, list_of_media, type_of_media):
     user_input_array = []
     for item in user_input.split(" "):
         user_input_array.append(item)
-
 
     # this will check if only an integer has been input,
     # or whether a letter prepends it
@@ -90,12 +87,6 @@ def process_output(output, type_of_media):
             return output_array
 
 
-def display_table(list_of_media, table_title):
-    table_unpopulated = Tables.generate_table([table_title])
-    table = Tables.populate_table(table_unpopulated, list_of_media)
-    console.print(table)  # the table is printed here
-
-
 def get_user_input(list_of_media, type_of_media):
     user_input_unprocessed = input("➙ ")
     user_input = handle_input(user_input_unprocessed, list_of_media, type_of_media)
@@ -111,7 +102,7 @@ def main():
                 cs()
                 artists_unprocessed = client.list("artist")  # get raw output
                 artists = process_output(artists_unprocessed, "artist")  # process the raw output
-                display_table(artists, "Artists")  # display the artists
+                Tables.display_table(artists, "Artists")  # display the artists
 
                 current_level += 1 # go to the next level
             case 2:
@@ -126,7 +117,7 @@ def main():
                 cs()
                 albums_unprocessed = client.find("artist", user_input_2)
                 albums = process_output(albums_unprocessed, "album")
-                display_table(albums, user_input_2)  # user_input is the name of the selected artist
+                Tables.display_table(albums, user_input_2)  # user_input is the name of the selected artist
 
                 current_level += 1  # go to the next level
             case 4:
@@ -141,7 +132,7 @@ def main():
                 cs()
                 titles_unprocessed = client.find("album", user_input_4)
                 titles = process_output(titles_unprocessed, "title")
-                display_table(titles, f"{user_input_2}: {user_input_4}")
+                Tables.display_table(titles, f"{user_input_2}: {user_input_4}")
 
                 current_level += 1
             case 6:
