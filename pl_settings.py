@@ -127,13 +127,16 @@ def handle_input(user_input, client_status):
                         next_previous("next")
                     case "11":
                         next_previous("prev")
+                    case _:
+                        console.print("Invalid option")
             else:
-                pass
+                console.print("Invalid option")
         case _:
-            pass
+            console.print("Invalid option")
 
 
 def main():
+    cs()
     current_level = 1
     while True:
         client_status = client.status()
@@ -159,8 +162,12 @@ def main():
                 console.print(pl_options_table)
                 current_level += 1
             case 2:
-                user_input_unprocessed = input("➙ ")
-                handle_input(user_input_unprocessed, client_status)
+                try:
+                    user_input_unprocessed = input("➙ ")
+                    handle_input(user_input_unprocessed, client_status)
+                except (KeyboardInterrupt, EOFError):
+                    cs()
+                    return
 
 
 main()

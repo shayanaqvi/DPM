@@ -1,5 +1,7 @@
 from client import client
 from cs import cs
+from inform import inform_user
+from messages import messages
 
 from Tables import Tables
 
@@ -30,7 +32,7 @@ def handle_input(user_input, list_of_media, type_of_media):
                 if user_input_array[0].isdigit():
                     # this operation is not supported at level 6
                     if current_level == 6:
-                        console.print("This operation is not supported here")
+                        inform_user(messages["Invalid option"], "error")
                     else:
                         # return the item at the index selected by the user
                         selection = list_of_media[int(user_input_array[0]) - 1]
@@ -38,33 +40,37 @@ def handle_input(user_input, list_of_media, type_of_media):
                         return selection
                 # if 'a' was input with no index
                 elif user_input_array[0] == "a":
-                    console.print("No index was supplied")
+                    inform_user(messages["No index"], "error")
                 # if any other data type is supplied
                 else:
-                    console.print("Invalid operation")
+                    inform_user(messages["Invalid option"], "error")
 
             # if the user selects an invalid index
             except (IndexError):
-                console.print("This index does not exist")
+                inform_user(messages["Invalid index"], "error")
 
         # add an item to the queue
         case 2:
             # check if an acceptible letter was input, in this case only 'a' is accepted
             match user_input_array[0]:
                 case "a":
-                    # use isinstance()?
-                    # check if an integer has been input after 'a'
-                    if user_input_array[1].isdigit():
-                        selection = list_of_media[int(user_input_array[1]) - 1]
-                        # add the user's selection to the queue
-                        client.findadd(type_of_media, selection)
-                    elif user_input_array[1] == "":
-                        console.print("No index was supplied")
+                    try:
+                        # use isinstance()?
+                        # check if an integer has been input after 'a'
+                        if user_input_array[1].isdigit():
+                            selection = list_of_media[int(user_input_array[1]) - 1]
+                            # add the user's selection to the queue
+                            client.findadd(type_of_media, selection)
+                            inform_user(messages["Added to queue"], "affirmative")
+                        elif user_input_array[1] == "":
+                            inform_user(messages["No index"], "error")
+                    except (IndexError):
+                        inform_user(messages["Invalid index"], "error")
                 case _:
-                    console.print("Invalid operation")
+                    inform_user(messages["Invalid option"], "error")
         # invalid input
         case _:
-            console.print("Invalid operation")
+            inform_user(messages["Invalid option"], "error")
 
 
 def process_output(output, type_of_media):
