@@ -1,5 +1,9 @@
 from rich import box
 from rich.table import Table
+from rich.console import Console
+
+
+console = Console()
 
 
 class Tables():
@@ -40,3 +44,9 @@ class Tables():
             )
 
         return table
+
+    def display_table(list_of_media, table_title):
+        table_unpopulated = Tables.generate_table([table_title])
+        table = Tables.populate_table(table_unpopulated, list_of_media)
+        console.print(table)  # the table is printed here
+
