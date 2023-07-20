@@ -1,5 +1,7 @@
 from cs import cs
 from client import client
+from inform import inform_user
+from messages import messages
 from Tables import Tables
 
 from rich.console import Console
@@ -16,29 +18,31 @@ def handle_input(user_input, query_results):
     match len(input_array):
         case 1:
             if input_array[0] == "a":
-                console.print("No index supplied")
+                inform_user(messages["No index"], "error")
             else:
-                console.print("This operation is not supported here")
+                inform_user(messages["Invalid operation"], "error")
         case 2:
             match input_array[0]:
                 case "a":
                     if input_array[1].isdigit():
                         selection = query_results[int(input_array[1]) - 1]
                         client.add(selection["file"])
+                        inform_user(messages["Added to queue"], "affirmative")
                     elif input_array[1] == "*":
                         for item in query_results:
                             client.add(item["file"])
+                        inform_user(messages["Added to queue"], "affirmative")
                     elif input_array[1] == "":
-                        console.print("No index supplied")
+                        inform_user(messages["No index"], "error")
                     else:
-                        console.print("Invalid operation")
+                        inform_user(messages["Invalid operation"], "error")
                 case _:
-                    console.print("Invalid operation")
+                    inform_user(messages["Invalid operation"], "error")
         case _:
-            pass
-    
+            inform_user(messages["Invalid operation"], "error")
 
-def main():
+
+def search():
     cs()
     current_level = 1
     while True:
@@ -52,9 +56,6 @@ def main():
                     query_results_display = []
 
                     for result in query_results_unprocessed:
-                        artist = result["artist"]
-                        album = result["album"]
-                        title = result["title"]
                         query_results_display.append(f"{result['artist']} ➙ {result['album']} ➙ {result['title']}")
                         query_results.append(result)
 
@@ -72,6 +73,3 @@ def main():
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     current_level -= 1
-
-
-main()
