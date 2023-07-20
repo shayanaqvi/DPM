@@ -36,7 +36,7 @@ def handle_input(user_input, list_of_playlists):
             console.print("Invalid operation")
 
 
-def main():
+def pl_browse():
     global current_level
     while True:
         match current_level:
@@ -55,6 +55,3 @@ def main():
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     return
-
-
-main()

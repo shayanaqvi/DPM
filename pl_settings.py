@@ -135,7 +135,7 @@ def handle_input(user_input, client_status):
             console.print("Invalid option")
 
 
-def main():
+def pl_settings():
     cs()
     current_level = 1
     while True:

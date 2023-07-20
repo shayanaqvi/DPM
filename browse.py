@@ -99,7 +99,7 @@ def get_user_input(list_of_media, type_of_media):
     return user_input
 
 
-def main():
+def browse():
     global current_level
     while True:
         match current_level:
@@ -150,6 +150,3 @@ def main():
                 except (KeyboardInterrupt, EOFError):
                     cs()
                     current_level -= 3
-
-
-main()
