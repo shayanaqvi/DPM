@@ -1,6 +1,7 @@
 from browse import browse
 from current import current
 from inform import inform_user
+from messages import messages
 from pl_browse import pl_browse
 from pl_settings import pl_settings
 from search import search
@@ -36,9 +37,11 @@ if __name__ == "__main__":
                     shuffle()
                 case "h":
                     os.system('%s %s' % (os.getenv('EDITOR'), "HELP.md"))
+                case _:
+                    inform_user(messages["Invalid option"], "error")
         case 3:
             match user_arguments[1]:
                 case "o":
                     pl_settings(user_arguments[2], "cli")
                 case _:
-                    pass
+                    inform_user(messages["Invalid option"], "error")
