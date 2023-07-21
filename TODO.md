@@ -1,3 +1,5 @@
 - central and sensible colouring system for the user interface
 - consistent error messaging
 - central messaging system
+- shuffle entire library
+- help
