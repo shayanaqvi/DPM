@@ -18,7 +18,7 @@ class Tables():
 
         # column for row numbers
         table.add_column(
-            "#",
+            "",
             style="cyan",
             header_style="cyan",
             justify="right"

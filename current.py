@@ -155,7 +155,7 @@ def queue():
     }
 
 
-def currently_playing():
+def current():
     cs()
     try:
         with Live(generate_table(), refresh_per_second=4) as live:
@@ -163,6 +163,3 @@ def currently_playing():
                 live.update(generate_table())
     except (KeyboardInterrupt, EOFError):
         return
-
-
-currently_playing()

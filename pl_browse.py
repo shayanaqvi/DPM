@@ -1,5 +1,7 @@
 from client import client
 from cs import cs
+from inform import inform_user
+from messages import messages
 
 from Tables import Tables
 
@@ -18,22 +20,26 @@ def handle_input(user_input, list_of_playlists):
     match len(user_input_array):
         case 1:
             if user_input_array[0] == "a":
-                console.print("Index not supplied")
+                inform_user(messages["No index"], "error")
             else:
-                console.print("Invalid operation")
+                inform_user(messages["Invalid option"], "error")
         case 2:
             if user_input_array[0] == "a":
-                if user_input_array[1].isdigit():
-                    selection = list_of_playlists[int(user_input_array[1]) - 1]
-                    client.load(selection)
-                elif user_input_array[1] == "":
-                    console.print("Index not supplied")
-                else:
-                    console.print("Invalid option")
+                try:
+                    if user_input_array[1].isdigit():
+                        selection = list_of_playlists[int(user_input_array[1]) - 1]
+                        client.load(selection)
+                        inform_user(messages["Added to queue"], "affirmative")
+                    elif user_input_array[1] == "":
+                        inform_user(messages["No index"], "error")
+                    else:
+                        inform_user(messages["Invalid option"], "error")
+                except (IndexError):
+                    inform_user(messages["Invalid index"], "error")
             else:
-                console.print("Invalid operation")
+                inform_user(messages["Invalid option"], "error")
         case _:
-            console.print("Invalid operation")
+            inform_user(messages["Invalid option"], "error")
 
 
 def pl_browse():

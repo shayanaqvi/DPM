@@ -1,6 +1,9 @@
 from cs import cs
 from client import client
+from inform import inform_user
+from messages import messages
 from Tables import Tables
+
 from rich.console import Console
 
 
@@ -17,19 +20,28 @@ def toggle_settings(client_status, setting_to_toggle):
         case "repeat":
             repeat_toggle ^= 1
             client.repeat(repeat_toggle)
+            confirmation = "Repeat mode is now on" if repeat_toggle == 1 else "Repeat mode is now off"
+            inform_user(confirmation, "affirmative")
         case "random":
             random_toggle ^= 1
             client.random(random_toggle)
+            confirmation = "Random mode now is on" if random_toggle == 1 else "Random mode is now off"
+            inform_user(confirmation, "affirmative")
         case "single":
             single_toggle ^= 1
             client.single(single_toggle)
+            confirmation = "Single mode now is on" if single_toggle == 1 else "Single mode now is off"
+            inform_user(confirmation, "affirmative")
         case "consume":
             consume_toggle ^= 1
             client.consume(consume_toggle)
+            confirmation = "Consume mode now is on" if consume_toggle == 1 else "Consume mode now is off"
+            inform_user(confirmation, "affirmative")
 
 
 def clear_playlist():
     client.clear()
+    inform_user("Playlist has been cleared", "affirmative")
 
 
 def crop_playlist(temp):
@@ -39,19 +51,22 @@ def crop_playlist(temp):
     current_song_progress = client_status["elapsed"]
     client.clear()
     client.add(current_song["file"])
-    console.print(current_song_progress)
     client.seek(0, current_song_progress)
     client.play()
+    inform_user("Playlist has been cropped", "affirmative")
 
 
 def shuffle_playlist():
     client.shuffle()
+    inform_user("Playlist has been shuffled", "affirmative")
 
 
 def play_pause(client_status):
     match client_status["state"]:
         case "play" | "pause":
             client.pause()
+            confirmation = "Playing" if client_status["state"] == "play" else "Paused"
+            inform_user(confirmation, "affirmative")
         case "stop":
             # fix later
             client.play(0)
@@ -59,14 +74,17 @@ def play_pause(client_status):
 
 def stop_playback():
     client.stop()
+    inform_user("Playback stopped", "affirmative")
 
 
 def next_previous(direction):
     match direction:
         case "next":
             client.next()
+            inform_user("Playing next track", "affirmative")
         case "prev":
             client.previous()
+            inform_user("Playing previous track", "affirmative")
 
 
 def current_playlist(client_status):
@@ -128,11 +146,11 @@ def handle_input(user_input, client_status):
                     case "11":
                         next_previous("prev")
                     case _:
-                        console.print("Invalid option")
+                        inform_user(messages["Invalid option"], "error")
             else:
-                console.print("Invalid option")
+                inform_user(messages["Invalid option"], "error")
         case _:
-            console.print("Invalid option")
+            inform_user(messages["Invalid option"], "error")
 
 
 def pl_settings():
