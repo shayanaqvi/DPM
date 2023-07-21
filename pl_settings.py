@@ -121,68 +121,74 @@ def handle_input(user_input, client_status):
 
     match len(user_input_array):
         case 1:
-            if user_input_array[0].isdigit():
-                match user_input_array[0]:
-                    case "1":
-                        toggle_settings(client_status, "repeat")
-                    case "2":
-                        toggle_settings(client_status, "random")
-                    case "3":
-                        toggle_settings(client_status, "single")
-                    case "4":
-                        toggle_settings(client_status, "consume")
-                    case "5":
-                        clear_playlist()
-                    case "6":
-                        crop_playlist(client_status)
-                    case "7":
-                        shuffle_playlist()
-                    case "8":
-                        play_pause(client_status)
-                    case "9":
-                        stop_playback()
-                    case "10":
-                        next_previous("next")
-                    case "11":
-                        next_previous("prev")
-                    case _:
-                        inform_user(messages["Invalid option"], "error")
-            else:
-                inform_user(messages["Invalid option"], "error")
+            match user_input_array[0]:
+                case "1" | "r":
+                    toggle_settings(client_status, "repeat")
+                case "2" | "z":
+                    toggle_settings(client_status, "random")
+                case "3" | "o":
+                    toggle_settings(client_status, "single")
+                case "4" | "c":
+                    toggle_settings(client_status, "consume")
+                case "5" | "e":
+                    clear_playlist()
+                case "6" | "k":
+                    crop_playlist(client_status)
+                case "7" | "s":
+                    shuffle_playlist()
+                case "8" | "t":
+                    play_pause(client_status)
+                case "9" | "x":
+                    stop_playback()
+                case "10" | "n":
+                    next_previous("next")
+                case "11" | "p":
+                    next_previous("prev")
+                case _:
+                    inform_user(messages["Invalid option"], "error")
         case _:
             inform_user(messages["Invalid option"], "error")
 
 
-def pl_settings():
-    cs()
+def pl_settings(user_arguments, means_of_access):
     current_level = 1
+
+    cs() if means_of_access == "app" else None
+
     while True:
-        client_status = client.status()
-        match current_level:
-            case 1:
-                pl_options_table_unpopulated = Tables.generate_table(["Playlist Options"])
-                pl_options_table = Tables.populate_table(
-                    pl_options_table_unpopulated,
-                    [
-                        "Repeat",
-                        "Random",
-                        "Single",
-                        "Consume",
-                        "Clear Playlist",
-                        "Crop Playlist",
-                        "Shuffle Playlist",
-                        "Play/Pause",
-                        "Stop Playback",
-                        "Next",
-                        "Previous",
-                    ]
-                )
-                console.print(pl_options_table)
-                current_level += 1
-            case 2:
-                try:
-                    user_input_unprocessed = input("➙ ")
-                    handle_input(user_input_unprocessed, client_status)
-                except (KeyboardInterrupt, EOFError):
-                    cs()
-                    return
+        match means_of_access:
+            case "app":
+                client_status = client.status()
+                match current_level:
+                    case 1:
+                        pl_options_table_unpopulated = Tables.generate_table(["Playlist Options"])
+                        pl_options_table = Tables.populate_table(
+                            pl_options_table_unpopulated,
+                            [
+                                "Repeat",
+                                "Random",
+                                "Single",
+                                "Consume",
+                                "Clear Playlist",
+                                "Crop Playlist",
+                                "Shuffle Playlist",
+                                "Play/Pause",
+                                "Stop Playback",
+                                "Next",
+                                "Previous",
+                            ]
+                            )
+                        console.print(pl_options_table)
+                        current_level += 1
+                    case 2:
+                        try:
+                            user_input_unprocessed = input("➙ ")
+                            handle_input(user_input_unprocessed, client_status)
+                        except (KeyboardInterrupt, EOFError):
+                            cs()
+                            return
+            case "cli":
+                client_status = client.status()
+                user_input = user_arguments
+                handle_input(user_input, client_status)
+                break
