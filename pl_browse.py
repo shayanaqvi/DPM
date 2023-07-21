@@ -43,6 +43,7 @@ def handle_input(user_input, list_of_playlists):
 
 
 def pl_browse():
+    cs()
     global current_level
     while True:
         match current_level:
