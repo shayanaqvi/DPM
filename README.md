@@ -10,4 +10,4 @@ dpm is just one more terminal frontend to MPD.
 # Usage
 Refer to [HELP.md](HELP.md)
 # Installation
-Download the executable in the 'Releases' section. Place it in a location in your $PATH.
+At present, dpm does not have a method of installation. If you want to use it, clone the repository and run `dpm.py`. You could try using pyinstaller, however, to create a binary.
